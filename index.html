@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управления задачами</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-todo {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-progress {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-review {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .status-blocked {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-done {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .priority-high {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .priority-medium {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: #059669;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <div id="loginScreen"
+        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <img src="https://crimeamilk.ru/images/logo/logo-new.svg"
+                    alt="Task System" class="w-24 h-24 mx-auto mb-4 rounded-xl object-cover">
+                <h1 class="text-2xl font-bold text-gray-800">Система управления задачами</h1>
+                <p class="text-gray-500 mt-2">Вход в систему</p>
+                <p class="text-sm text-gray-400 mt-1">Введите учетные данные вашей организации</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Логин организации</label>
+                    <input type="text" id="loginUsername"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        placeholder="rarus" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                    <input type="password" id="loginPassword"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="text-red-500 text-sm hidden">Неверный логин или пароль</div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Войти
+                    в систему</button>
+            </form>
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <p class="text-xs text-gray-500 font-medium mb-2">Подсказка:</p>
+                <p class="text-xs text-gray-400 font-mono">rarus/rarus2024, gradient/grad2024, kutuzovtsy/kut2024,
+                    admin/superadmin</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="hidden min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                        З</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Управление задачами</h1>
+                        <p class="text-xs text-gray-500">Вы вошли как: <span id="currentUserDisplay"
+                                class="font-medium text-blue-600"></span></p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="connectionStatus" class="flex items-center space-x-2 text-sm">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-gray-600">Онлайн</span>
+                    </div>
+                    <button id="logoutBtn"
+                        class="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">Выйти</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button class="tab-btn tab-active py-4 px-1 text-sm font-medium" data-tab="tasks">Задачи <span
+                            id="taskCountBadge"
+                            class="ml-1 bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">0</span></button>
+                    <button class="tab-btn py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700"
+                        data-tab="employees">👥 Сотрудники</button>
+                    <button class="tab-btn py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700"
+                        data-tab="history">История изменений</button>
+                    <button class="tab-btn py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700"
+                        data-tab="organizations">Организации</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div id="tab-tasks" class="tab-content fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div
+                        class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h2 class="text-lg font-bold text-gray-800">Реестр задач</h2>
+                        <div class="flex flex-wrap gap-3">
+                            <select id="filterOrg"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="">Все организации</option>
+                            </select>
+                            <select id="filterStatus"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="">Все статусы</option>
+                                <option value="К выполнению">К выполнению</option>
+                                <option value="В работе">В работе</option>
+                                <option value="На ревью">На ревью</option>
+                                <option value="Утверждено">Утверждено</option>
+                                <option value="Заблокировано">Заблокировано</option>
+                                <option value="Завершено">Завершено</option>
+                            </select>
+                            <button id="btnNewTask"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                                <span>+</span> Новая задача
+                            </button>
+                            <button id="btnExportJSON"
+                                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                                <span>JSON</span> Экспорт
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-3">Статус</th>
+                                    <th class="px-6 py-3">Приоритет</th>
+                                    <th class="px-6 py-3">Название задачи</th>
+                                    <th class="px-6 py-3">Организация</th>
+                                    <th class="px-6 py-3">Ответственный</th>
+                                    <th class="px-6 py-3">Часы / Стоимость</th>
+                                    <th class="px-6 py-3 text-right">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="taskTableBody" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                        <div id="emptyTasksState" class="hidden p-12 text-center text-gray-500">
+                            <p class="text-lg">Задачи не найдены.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-employees" class="tab-content hidden fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="employeesGrid"></div>
+            </div>
+
+            <div id="tab-history" class="tab-content hidden fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-gray-800">История изменений</h2>
+                        <button id="btnClearHistory"
+                            class="text-sm text-red-600 hover:text-red-700 font-medium">Очистить</button>
+                    </div>
+                    <div id="historyList" class="space-y-4 max-h-[600px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div id="tab-organizations" class="tab-content hidden fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-gray-800">Карточки организаций</h2>
+                        <button id="btnOrgJSON"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors">JSON</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="orgGrid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="taskModal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto fade-in">
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10">
+                <h3 id="modalTitle" class="text-xl font-bold text-gray-800">Задача</h3>
+                <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                        <input type="checkbox" id="readOnlyToggle"
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        Только просмотр
+                    </label>
+                    <button id="closeTaskModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 space-y-6">
+                <input type="hidden" id="editTaskId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Название задачи *</label>
+                        <input type="text" id="editTitle"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                        <textarea id="editDescription" rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Организация</label>
+                        <select id="editOrg"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="РАРУС">РАРУС</option>
+                            <option value="Градиент">Градиент</option>
+                            <option value="Кутузовцы">Кутузовцы</option>
+                            <option value="Отдел ИТ-ЧЗПТ">Отдел ИТ-ЧЗПТ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Приоритет</label>
+                        <select id="editPriority"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Низкий">Низкий</option>
+                            <option value="Средний">Средний</option>
+                            <option value="Высокий">Высокий</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ответственный</label>
+                        <select id="editAssignee"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Статус</label>
+                        <select id="editStatus"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="К выполнению">К выполнению</option>
+                            <option value="В работе">В работе</option>
+                            <option value="На ревью">На ревью</option>
+                            <option value="Утверждено">Утверждено</option>
+                            <option value="Заблокировано">Заблокировано</option>
+                            <option value="Завершено">Завершено</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">Прогресс (%) 🔄</label>
+                        <div class="flex items-center gap-2">
+                            <input type="range" id="editProgress" min="0" max="100" value="0"
+                                class="w-32 accent-blue-600">
+                            <span id="editProgressValue"
+                                class="text-sm font-bold text-blue-600 w-10 text-right">0%</span>
+                            <label class="flex items-center gap-1 text-xs text-gray-500 ml-2">
+                                <input type="checkbox" id="autoProgress" class="rounded"> Авто
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Плановые часы</label>
+                            <input type="number" id="editPlannedHours"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Фактические часы</label>
+                            <input type="number" id="editActualHours"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Ставка часа (₽)</label>
+                            <input type="number" id="editHourlyRate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Стоимость</label>
+                            <input type="text" id="editTotalCost"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 font-medium"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Телефон</label>
+                            <input type="text" id="editPhone"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Email</label>
+                            <input type="text" id="editEmail"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-semibold text-gray-800">📋 Внутренние подзадачи <span id="subtaskCount"
+                                class="text-sm font-normal text-gray-500">0/0</span></h4>
+                        <button id="btnAddSubtask" class="text-sm text-blue-600 hover:text-blue-700 font-medium">+
+                            Добавить</button>
+                    </div>
+                    <div id="subtasksList" class="space-y-2"></div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-semibold text-gray-800">⚡ Связанные задачи</h4>
+                        <button id="btnAddLinkedTask" class="text-sm text-blue-600 hover:text-blue-700 font-medium">+
+                            Задача</button>
+                    </div>
+                    <div id="linkedTasksList" class="space-y-2"></div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">💬 Комментарии</h4>
+                    <div id="commentsList" class="space-y-3 mb-4 max-h-48 overflow-y-auto"></div>
+                    <div class="flex gap-2">
+                        <input type="text" id="newCommentText"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="Написать комментарий...">
+                        <button id="btnSendComment"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">Отправить</button>
+                    </div>
+                </div>
+            </div>
+            <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-between items-center">
+                <button id="btnDeleteTask"
+                    class="px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-medium rounded-lg transition-colors hidden">Удалить</button>
+                <div class="flex gap-3 ml-auto">
+                    <button id="cancelTaskModal"
+                        class="px-6 py-2 text-gray-700 hover:bg-gray-200 text-sm font-medium rounded-lg transition-colors">Отмена</button>
+                    <button id="saveTaskModal"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить
+                        задачу</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="newTaskModal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl fade-in">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-800">Новая задача</h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Название задачи *</label>
+                    <input type="text" id="newTaskTitle"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                    <textarea id="newTaskDescription" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Организация</label>
+                        <select id="newTaskOrg"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="РАРУС">РАРУС</option>
+                            <option value="Градиент">Градиент</option>
+                            <option value="Кутузовцы">Кутузовцы</option>
+                            <option value="Отдел ИТ-ЧЗПТ">Отдел ИТ-ЧЗПТ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Приоритет</label>
+                        <select id="newTaskPriority"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Низкий">Низкий</option>
+                            <option value="Средний">Средний</option>
+                            <option value="Высокий">Высокий</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ответственный</label>
+                        <select id="newTaskAssignee"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Статус</label>
+                        <select id="newTaskStatus"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="К выполнению">К выполнению</option>
+                            <option value="В работе">В работе</option>
+                            <option value="Завершено">Завершено</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Плановые часы</label>
+                        <input type="number" id="newTaskPlanned"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            min="0" value="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Фактические часы</label>
+                        <input type="number" id="newTaskActual"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            min="0" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+                <button id="cancelNewTask"
+                    class="px-6 py-2 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-lg transition-colors">Отмена</button>
+                <button id="saveNewTask"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить
+                    задачу</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="jsonModal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl fade-in">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">JSON Шаблон данных</h3>
+                <button id="closeJsonModal" class="p-2 hover:bg-gray-100 rounded-lg"><svg class="w-5 h-5 text-gray-500"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg></button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">Скопируйте этот JSON для сохранения в файл или импорта:</p>
+                <textarea id="jsonOutput" rows="15"
+                    class="w-full px-4 py-3 bg-gray-900 text-green-400 font-mono text-sm rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+                <button id="closeJsonModalBtn"
+                    class="px-6 py-2 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-lg transition-colors">Закрыть</button>
+                <button id="copyJsonBtn"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">Копировать</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const INITIAL_DATA = {
+                "employees": [
+                    { "id": 1, "name": "Сотрудник", "role": "DevOps", "phone": "+7 (978) 555-45-24", "email": "", "hourly_rate": 2500, "organization": "РАРУС" },
+                    { "id": 2, "name": "Сотрудник", "role": "DevOps", "phone": "+7 (978) 555-47-77", "email": "", "hourly_rate": 2500, "organization": "РАРУС" },
+                    { "id": 3, "name": "Сотрудник", "role": "DevOps", "phone": "", "email": "", "hourly_rate": 2500, "organization": "Кутузовцы" },
+                    { "id": 4, "name": "Сотрудник", "role": "DevOps", "phone": "", "email": "	dchsh@vtiurin.ru", "hourly_rate": 2500, "organization": "Градиент" },
+                    { "id": 5, "name": "Главный Администратор", "role": "Супер-админ", "phone": "+7 (978) 797-59-39", "email": "labenskiysp@crimeamilk.ru", "hourly_rate": 2500, "organization": "Отдел ИТ-ЧЗПТ" }
+                ],
+                "tasks": [
+                    {
+                        "id": "task-001",
+                        "title": "Разработка модуля авторизации",
+                        "description": "Реализовать вход по логину и паролю.",
+                        "organization": "РАРУС",
+                        "priority": "Высокий",
+                        "assignee_id": 2,
+                        "status": "В работе",
+                        "progress": 45,
+                        "planned_hours": 40,
+                        "actual_hours": 18,
+                        "subtasks": [{ "id": "sub-1", "title": "Проектирование БД", "done": true }],
+                        "linked_tasks": [],
+                        "comments": [],
+                        "history": [{ "timestamp": "2026-06-08T10:00:00Z", "action": "Создана задача", "user": "Администратор РАРУС" }],
+                        "created_at": "2026-06-08T10:00:00Z",
+                        "updated_at": "2026-06-09T09:00:00Z"
+                    },
+                    {
+                        "id": "task-002",
+                        "title": "Интеграция с 1С:Предприятие",
+                        "description": "Настроить обмен данными.",
+                        "organization": "Градиент",
+                        "priority": "Средний",
+                        "assignee_id": 4,
+                        "status": "К выполнению",
+                        "progress": 0,
+                        "planned_hours": 60,
+                        "actual_hours": 0,
+                        "subtasks": [],
+                        "linked_tasks": [],
+                        "comments": [],
+                        "history": [],
+                        "created_at": "2026-06-10T08:00:00Z",
+                        "updated_at": "2026-06-10T08:00:00Z"
+                    }
+                ]
+            };
+
+            const CREDENTIALS = {
+                'rarus': { pass: 'rarus2024', org: 'РАРУС', isAdmin: false },
+                'gradient': { pass: 'grad2024', org: 'Градиент', isAdmin: false },
+                'kutuzovtsy': { pass: 'kut2024', org: 'Кутузовцы', isAdmin: false },
+                'admin': { pass: 'superadmin', org: 'Отдел ИТ-ЧЗПТ', isAdmin: true }
+            };
+
+            let appState = {
+                currentUser: null,
+                tasks: [],
+                employees: [],
+                filterOrg: '',
+                filterStatus: '',
+                activeTab: 'tasks',
+                editingTaskId: null,
+                isReadOnly: false,
+                currentSubtasks: [],
+                currentLinkedTasks: [],
+                currentComments: []
+            };
+
+            let socket = null;
+            let useServer = false;
+
+            const storage = {
+                async getEmployees() {
+                    if (useServer) {
+                        try {
+                            const res = await fetch(`http://localhost:3000/api/employees`);
+                            if (!res.ok) throw new Error();
+                            return await res.json();
+                        } catch (e) { useServer = false; }
+                    }
+                    return JSON.parse(localStorage.getItem('tms_employees') || '[]');
+                },
+                async getTasks() {
+                    if (useServer) {
+                        try {
+                            const res = await fetch(`http://localhost:3000/api/tasks`);
+                            if (!res.ok) throw new Error();
+                            return await res.json();
+                        } catch (e) { useServer = false; }
+                    }
+                    return JSON.parse(localStorage.getItem('tms_tasks') || '[]');
+                },
+                async saveTask(taskData) {
+                    if (useServer) {
+                        try {
+                            const method = taskData.id ? 'PUT' : 'POST';
+                            const url = taskData.id ? `http://localhost:3000/api/tasks/${taskData.id}` : `http://localhost:3000/api/tasks`;
+                            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(taskData) });
+                            if (!res.ok) throw new Error();
+                            return await res.json();
+                        } catch (e) { useServer = false; }
+                    }
+                    let tasks = JSON.parse(localStorage.getItem('tms_tasks') || '[]');
+                    if (taskData.id) {
+                        const idx = tasks.findIndex(t => t.id === taskData.id);
+                        if (idx !== -1) tasks[idx] = { ...tasks[idx], ...taskData, updated_at: new Date().toISOString() };
+                    } else {
+                        taskData.id = `task-${Date.now()}`;
+                        taskData.created_at = new Date().toISOString();
+                        taskData.updated_at = new Date().toISOString();
+                        tasks.push(taskData);
+                    }
+                    localStorage.setItem('tms_tasks', JSON.stringify(tasks));
+                    if (window.BroadcastChannel) {
+                        const bc = new BroadcastChannel('tms_sync');
+                        bc.postMessage({ type: 'task:updated', task: taskData });
+                    }
+                    return taskData;
+                },
+                async deleteTask(taskId) {
+                    if (useServer) {
+                        try {
+                            await fetch(`http://localhost:3000/api/tasks/${taskId}`, { method: 'DELETE' });
+                            return;
+                        } catch (e) { useServer = false; }
+                    }
+                    let tasks = JSON.parse(localStorage.getItem('tms_tasks') || '[]');
+                    tasks = tasks.filter(t => t.id !== taskId);
+                    localStorage.setItem('tms_tasks', JSON.stringify(tasks));
+                    if (window.BroadcastChannel) {
+                        const bc = new BroadcastChannel('tms_sync');
+                        bc.postMessage({ type: 'task:deleted', id: taskId });
+                    }
+                }
+            };
+
+            function getVisibleTasks() {
+                if (appState.currentUser && appState.currentUser.isAdmin) {
+                    return appState.tasks;
+                }
+                return appState.tasks.filter(t => t.organization === appState.currentUser.org);
+            }
+
+            function getVisibleEmployees() {
+                if (appState.currentUser && appState.currentUser.isAdmin) {
+                    return appState.employees;
+                }
+                return appState.employees.filter(e => e.organization === appState.currentUser.org);
+            }
+
+            function canEditTask(task) {
+                if (appState.currentUser.isAdmin) return true;
+                return task.organization === appState.currentUser.org;
+            }
+
+            async function initApp() {
+                let data = INITIAL_DATA;
+                try {
+                    const res = await fetch('data.json');
+                    if (res.ok) {
+                        data = await res.json();
+                    }
+                } catch (e) {
+                    console.log('Using embedded INITIAL_DATA');
+                }
+
+                if (!localStorage.getItem('tms_employees')) {
+                    localStorage.setItem('tms_employees', JSON.stringify(data.employees));
+                }
+                if (!localStorage.getItem('tms_tasks')) {
+                    localStorage.setItem('tms_tasks', JSON.stringify(data.tasks));
+                }
+
+                if (useServer) {
+                    try {
+                        socket = io('http://localhost:3000');
+                        socket.on('task:created', (taskData) => {
+                            if (!appState.tasks.find(t => t.id === taskData.id)) {
+                                appState.tasks.push(taskData);
+                                renderAll();
+                            }
+                        });
+                        socket.on('task:updated', (taskData) => {
+                            const idx = appState.tasks.findIndex(t => t.id === taskData.id);
+                            if (idx !== -1) { appState.tasks[idx] = taskData; renderAll(); }
+                        });
+                        socket.on('task:deleted', (taskId) => {
+                            appState.tasks = appState.tasks.filter(t => t.id !== taskId);
+                            renderAll();
+                        });
+                    } catch (e) { useServer = false; }
+                }
+
+                if (window.BroadcastChannel) {
+                    const bc = new BroadcastChannel('tms_sync');
+                    bc.onmessage = (event) => {
+                        if (event.data.type === 'task:updated') {
+                            const idx = appState.tasks.findIndex(t => t.id === event.data.task.id);
+                            if (idx !== -1) appState.tasks[idx] = event.data.task;
+                            else appState.tasks.push(event.data.task);
+                            renderAll();
+                        } else if (event.data.type === 'task:deleted') {
+                            appState.tasks = appState.tasks.filter(t => t.id !== event.data.id);
+                            renderAll();
+                        }
+                    };
+                }
+
+                appState.employees = await storage.getEmployees();
+                appState.tasks = await storage.getTasks();
+
+                const sessionUser = sessionStorage.getItem('tms_user');
+                if (sessionUser) {
+                    appState.currentUser = JSON.parse(sessionUser);
+                    showDashboard();
+                }
+
+                bindEvents();
+            }
+
+            function renderAll() {
+                renderTaskTable();
+                renderEmployees();
+                renderHistory();
+                renderOrganizations();
+                document.getElementById('taskCountBadge').textContent = getVisibleTasks().length;
+            }
+
+            function getStatusClass(statusName) {
+                const map = { 'К выполнению': 'status-todo', 'В работе': 'status-progress', 'На ревью': 'status-review', 'Утверждено': 'status-approved', 'Заблокировано': 'status-blocked', 'Завершено': 'status-done' };
+                return map[statusName] || 'status-todo';
+            }
+
+            function getPriorityClass(priorityName) {
+                const map = { 'Высокий': 'priority-high', 'Средний': 'priority-medium', 'Низкий': 'priority-low' };
+                return map[priorityName] || '';
+            }
+
+            function renderTaskTable() {
+                const tbody = document.getElementById('taskTableBody');
+                const emptyState = document.getElementById('emptyTasksState');
+
+                let visibleTasks = getVisibleTasks();
+                let filteredTasks = visibleTasks.filter(taskItem => {
+                    const matchOrg = !appState.filterOrg || taskItem.organization === appState.filterOrg;
+                    const matchStatus = !appState.filterStatus || taskItem.status === appState.filterStatus;
+                    return matchOrg && matchStatus;
+                });
+
+                if (filteredTasks.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                emptyState.classList.add('hidden');
+
+                tbody.innerHTML = filteredTasks.map(taskItem => {
+                    const assigneeItem = appState.employees.find(emp => emp.id === taskItem.assignee_id);
+                    const assigneeName = assigneeItem ? assigneeItem.name : 'Не назначен';
+                    const cost = (taskItem.actual_hours * (assigneeItem ? assigneeItem.hourly_rate : 0)).toLocaleString('ru-RU');
+
+                    return `
+                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer" data-task-id="${taskItem.id}">
+                        <td class="px-6 py-4"><span class="status-badge ${getStatusClass(taskItem.status)}">${taskItem.status}</span></td>
+                        <td class="px-6 py-4"><span class="${getPriorityClass(taskItem.priority)}">${taskItem.priority}</span></td>
+                        <td class="px-6 py-4 font-medium text-gray-900">${taskItem.title}</td>
+                        <td class="px-6 py-4 text-gray-600">${taskItem.organization}</td>
+                        <td class="px-6 py-4 text-gray-600">${assigneeName}</td>
+                        <td class="px-6 py-4 text-gray-600">${taskItem.actual_hours}ч / ${cost}₽</td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium open-task-btn" data-id="${taskItem.id}">Открыть</button>
+                        </td>
+                    </tr>
+                `;
+                }).join('');
+
+                document.querySelectorAll('.open-task-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openTaskModal(btn.dataset.id);
+                    });
+                });
+                document.querySelectorAll('#taskTableBody tr').forEach(row => {
+                    row.addEventListener('click', () => openTaskModal(row.dataset.taskId));
+                });
+            }
+
+            function renderEmployees() {
+                const grid = document.getElementById('employeesGrid');
+                const visibleEmps = getVisibleEmployees();
+                grid.innerHTML = visibleEmps.map(emp => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">${emp.name.charAt(0)}</div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${emp.name}</h3>
+                            <p class="text-sm text-gray-500">${emp.role}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <p>🏢 ${emp.organization}</p>
+                        <p>📞 ${emp.phone}</p>
+                        <p>✉️ ${emp.email}</p>
+                        <p class="font-medium text-gray-800 mt-2">💰 ${emp.hourly_rate.toLocaleString('ru-RU')} ₽/час</p>
+                    </div>
+                </div>
+            `).join('');
+            }
+
+            function renderHistory() {
+                const list = document.getElementById('historyList');
+                const allHistory = [];
+                const visibleTasks = getVisibleTasks();
+                visibleTasks.forEach(taskItem => {
+                    if (taskItem.history) {
+                        taskItem.history.forEach(histItem => {
+                            allHistory.push({ ...histItem, taskTitle: taskItem.title, taskId: taskItem.id });
+                        });
+                    }
+                });
+                allHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (allHistory.length === 0) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">История изменений пуста</p>';
+                    return;
+                }
+
+                list.innerHTML = allHistory.map(histItem => `
+                <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                    <div class="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800"><span class="font-medium">${histItem.user}</span> — ${histItem.action}</p>
+                        <p class="text-xs text-gray-500 mt-1">Задача: ${histItem.taskTitle} • ${new Date(histItem.timestamp).toLocaleString('ru-RU')}</p>
+                    </div>
+                </div>
+            `).join('');
+            }
+
+            function renderOrganizations() {
+                const grid = document.getElementById('orgGrid');
+                let orgs = ['РАРУС', 'Градиент', 'Кутузовцы', 'Отдел ИТ-ЧЗПТ'];
+                if (!appState.currentUser.isAdmin) {
+                    orgs = orgs.filter(org => org === appState.currentUser.org);
+                }
+
+                grid.innerHTML = orgs.map(orgName => {
+                    const taskCount = appState.tasks.filter(t => t.organization === orgName).length;
+                    const empCount = appState.employees.filter(e => e.organization === orgName).length;
+                    return `
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-sm p-6 text-white">
+                        <h3 class="text-lg font-bold mb-2">${orgName}</h3>
+                        <div class="space-y-1 text-sm text-blue-100">
+                            <p>📋 Задач: ${taskCount}</p>
+                            <p>👥 Сотрудников: ${empCount}</p>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+
+            function populateAssigneeSelect(selectId, filterOrg = null) {
+                const select = document.getElementById(selectId);
+                let emps = appState.employees;
+                if (filterOrg) {
+                    emps = emps.filter(e => e.organization === filterOrg);
+                }
+                select.innerHTML = '<option value="">Не назначен</option>' +
+                    emps.map(emp => `<option value="${emp.id}">${emp.name} (${emp.role})</option>`).join('');
+            }
+
+            function openTaskModal(taskId) {
+                const taskItem = appState.tasks.find(t => t.id === taskId);
+                if (!taskItem) return;
+
+                if (!canEditTask(taskItem)) {
+                    alert('Доступ запрещен: вы можете просматривать и редактировать только задачи своей организации.');
+                    return;
+                }
+
+                appState.editingTaskId = taskId;
+                const canEdit = canEditTask(taskItem);
+                appState.isReadOnly = !canEdit;
+
+                document.getElementById('editTaskId').value = taskId;
+                document.getElementById('modalTitle').textContent = taskItem.title;
+                document.getElementById('editTitle').value = taskItem.title;
+                document.getElementById('editDescription').value = taskItem.description || '';
+                document.getElementById('editOrg').value = taskItem.organization;
+                document.getElementById('editPriority').value = taskItem.priority;
+                document.getElementById('editStatus').value = taskItem.status;
+                document.getElementById('editProgress').value = taskItem.progress || 0;
+                document.getElementById('editProgressValue').textContent = `${taskItem.progress || 0}%`;
+                document.getElementById('editPlannedHours').value = taskItem.planned_hours || 0;
+                document.getElementById('editActualHours').value = taskItem.actual_hours || 0;
+
+                const assigneeItem = appState.employees.find(emp => emp.id === taskItem.assignee_id);
+                populateAssigneeSelect('editAssignee', taskItem.organization);
+                document.getElementById('editAssignee').value = taskItem.assignee_id || '';
+                document.getElementById('editHourlyRate').value = assigneeItem ? assigneeItem.hourly_rate : 0;
+                document.getElementById('editPhone').value = assigneeItem ? assigneeItem.phone : '';
+                document.getElementById('editEmail').value = assigneeItem ? assigneeItem.email : '';
+                updateCostDisplay();
+
+                const toggle = document.getElementById('readOnlyToggle');
+                toggle.checked = !canEdit;
+                toggle.disabled = !canEdit;
+
+                document.getElementById('btnDeleteTask').classList.toggle('hidden', !canEdit);
+                document.getElementById('saveTaskModal').classList.toggle('hidden', !canEdit);
+                document.getElementById('btnAddSubtask').classList.toggle('hidden', !canEdit);
+                document.getElementById('btnAddLinkedTask').classList.toggle('hidden', !canEdit);
+                document.getElementById('btnSendComment').classList.toggle('hidden', !canEdit);
+                document.getElementById('newCommentText').disabled = !canEdit;
+
+                const formElements = document.querySelectorAll('#taskModal input, #taskModal select, #taskModal textarea');
+                formElements.forEach(el => {
+                    if (el.id !== 'readOnlyToggle') {
+                        el.disabled = !canEdit;
+                    }
+                });
+
+                appState.currentSubtasks = taskItem.subtasks ? [...taskItem.subtasks] : [];
+                appState.currentLinkedTasks = taskItem.linked_tasks ? [...taskItem.linked_tasks] : [];
+                appState.currentComments = taskItem.comments ? [...taskItem.comments] : [];
+
+                renderSubtasks();
+                renderLinkedTasks();
+                renderComments();
+
+                document.getElementById('taskModal').classList.remove('hidden');
+            }
+
+            function closeTaskModalFn() {
+                document.getElementById('taskModal').classList.add('hidden');
+                appState.editingTaskId = null;
+            }
+
+            function renderSubtasks() {
+                const list = document.getElementById('subtasksList');
+                const doneCount = appState.currentSubtasks.filter(s => s.done).length;
+                document.getElementById('subtaskCount').textContent = `${doneCount}/${appState.currentSubtasks.length}`;
+
+                if (appState.currentSubtasks.length === 0) {
+                    list.innerHTML = '<p class="text-sm text-gray-400">Нет подзадач</p>';
+                    return;
+                }
+                list.innerHTML = appState.currentSubtasks.map((subItem, idx) => `
+                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <input type="checkbox" ${subItem.done ? 'checked' : ''} class="subtask-check rounded border-gray-300 text-blue-600" data-idx="${idx}" ${appState.isReadOnly ? 'disabled' : ''}>
+                    <input type="text" value="${subItem.title}" class="subtask-title flex-1 bg-transparent text-sm outline-none ${appState.isReadOnly ? 'pointer-events-none' : ''}" data-idx="${idx}">
+                    <button class="subtask-delete text-red-500 hover:text-red-700 text-sm ${appState.isReadOnly ? 'hidden' : ''}" data-idx="${idx}">✕</button>
+                </div>
+            `).join('');
+
+                document.querySelectorAll('.subtask-check').forEach(cb => cb.addEventListener('change', (e) => {
+                    appState.currentSubtasks[parseInt(e.target.dataset.idx)].done = e.target.checked;
+                    renderSubtasks();
+                    if (document.getElementById('autoProgress').checked) updateAutoProgress();
+                }));
+                document.querySelectorAll('.subtask-title').forEach(inp => inp.addEventListener('input', (e) => {
+                    appState.currentSubtasks[parseInt(e.target.dataset.idx)].title = e.target.value;
+                }));
+                document.querySelectorAll('.subtask-delete').forEach(btn => btn.addEventListener('click', (e) => {
+                    appState.currentSubtasks.splice(parseInt(e.target.dataset.idx), 1);
+                    renderSubtasks();
+                }));
+            }
+
+            function renderLinkedTasks() {
+                const list = document.getElementById('linkedTasksList');
+                if (appState.currentLinkedTasks.length === 0) {
+                    list.innerHTML = '<p class="text-sm text-gray-400">Нет связанных задач</p>';
+                    return;
+                }
+                list.innerHTML = appState.currentLinkedTasks.map(linkId => {
+                    const linkedItem = appState.tasks.find(t => t.id === linkId);
+                    return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-sm text-gray-700">${linkedItem ? linkedItem.title : linkId}</span>
+                        <button class="linked-delete text-red-500 hover:text-red-700 text-sm ${appState.isReadOnly ? 'hidden' : ''}" data-id="${linkId}">✕</button>
+                    </div>
+                `;
+                }).join('');
+                document.querySelectorAll('.linked-delete').forEach(btn => btn.addEventListener('click', (e) => {
+                    appState.currentLinkedTasks = appState.currentLinkedTasks.filter(id => id !== e.target.dataset.id);
+                    renderLinkedTasks();
+                }));
+            }
+
+            function renderComments() {
+                const list = document.getElementById('commentsList');
+                if (appState.currentComments.length === 0) {
+                    list.innerHTML = '<p class="text-sm text-gray-400">Нет комментариев</p>';
+                    return;
+                }
+                list.innerHTML = appState.currentComments.map(cmt => `
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-gray-800">${cmt.author}</span>
+                        <span class="text-xs text-gray-500">${new Date(cmt.timestamp).toLocaleString('ru-RU')}</span>
+                    </div>
+                    <p class="text-sm text-gray-700">${cmt.text}</p>
+                </div>
+            `).join('');
+            }
+
+            function updateCostDisplay() {
+                const hours = parseFloat(document.getElementById('editActualHours').value) || 0;
+                const rate = parseFloat(document.getElementById('editHourlyRate').value) || 0;
+                document.getElementById('editTotalCost').value = `${(hours * rate).toLocaleString('ru-RU')} ₽`;
+            }
+
+            function updateAutoProgress() {
+                if (appState.currentSubtasks.length === 0) return;
+                const doneCount = appState.currentSubtasks.filter(s => s.done).length;
+                const progress = Math.round((doneCount / appState.currentSubtasks.length) * 100);
+                document.getElementById('editProgress').value = progress;
+                document.getElementById('editProgressValue').textContent = `${progress}%`;
+            }
+
+            async function saveCurrentTask() {
+                const title = document.getElementById('editTitle').value.trim();
+                if (!title) { alert('Название задачи обязательно'); return; }
+
+                const taskData = {
+                    id: appState.editingTaskId,
+                    title: title,
+                    description: document.getElementById('editDescription').value,
+                    organization: document.getElementById('editOrg').value,
+                    priority: document.getElementById('editPriority').value,
+                    assignee_id: parseInt(document.getElementById('editAssignee').value) || null,
+                    status: document.getElementById('editStatus').value,
+                    progress: parseInt(document.getElementById('editProgress').value) || 0,
+                    planned_hours: parseFloat(document.getElementById('editPlannedHours').value) || 0,
+                    actual_hours: parseFloat(document.getElementById('editActualHours').value) || 0,
+                    subtasks: appState.currentSubtasks,
+                    linked_tasks: appState.currentLinkedTasks,
+                    comments: appState.currentComments
+                };
+
+                const existingTask = appState.tasks.find(t => t.id === taskData.id);
+                if (!canEditTask(taskData)) {
+                    alert('Ошибка доступа: вы можете редактировать только задачи своей организации.');
+                    return;
+                }
+
+                if (existingTask && existingTask.status !== taskData.status) {
+                    if (!taskData.history) taskData.history = [];
+                    taskData.history.push({
+                        timestamp: new Date().toISOString(),
+                        action: `Статус изменен на '${taskData.status}'`,
+                        user: appState.currentUser.displayName
+                    });
+                }
+
+                await storage.saveTask(taskData);
+
+                const idx = appState.tasks.findIndex(t => t.id === taskData.id);
+                if (idx !== -1) appState.tasks[idx] = { ...appState.tasks[idx], ...taskData };
+                else appState.tasks.push(taskData);
+
+                renderAll();
+                closeTaskModalFn();
+            }
+
+            function updateFilterOptions() {
+                const filterOrg = document.getElementById('filterOrg');
+                const currentVal = filterOrg.value;
+                filterOrg.innerHTML = '<option value="">Все организации</option>';
+
+                if (!appState.currentUser.isAdmin) {
+                    filterOrg.innerHTML = `<option value="${appState.currentUser.org}">${appState.currentUser.org}</option>`;
+                    filterOrg.value = appState.currentUser.org;
+                    appState.filterOrg = appState.currentUser.org;
+                } else {
+                    ['РАРУС', 'Градиент', 'Кутузовцы', 'Отдел ИТ-ЧЗПТ'].forEach(org => {
+                        filterOrg.innerHTML += `<option value="${org}">${org}</option>`;
+                    });
+                    filterOrg.value = currentVal;
+                }
+            }
+
+            function bindEvents() {
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+                    const password = document.getElementById('loginPassword').value;
+                    const cred = CREDENTIALS[username];
+
+                    if (cred && cred.pass === password) {
+                        appState.currentUser = {
+                            username,
+                            org: cred.org,
+                            isAdmin: cred.isAdmin,
+                            displayName: cred.isAdmin ? 'Главный Администратор' : `Администратор ${cred.org}`
+                        };
+                        sessionStorage.setItem('tms_user', JSON.stringify(appState.currentUser));
+                        showDashboard();
+                    } else {
+                        document.getElementById('loginError').classList.remove('hidden');
+                    }
+                });
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    sessionStorage.removeItem('tms_user');
+                    appState.currentUser = null;
+                    document.getElementById('dashboard').classList.add('hidden');
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                    document.getElementById('loginForm').reset();
+                    document.getElementById('loginError').classList.add('hidden');
+                });
+
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.tab-btn').forEach(b => {
+                            b.classList.remove('tab-active');
+                            b.classList.add('text-gray-500');
+                        });
+                        btn.classList.add('tab-active');
+                        btn.classList.remove('text-gray-500');
+
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                        document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+                        appState.activeTab = btn.dataset.tab;
+                    });
+                });
+
+                document.getElementById('filterOrg').addEventListener('change', (e) => {
+                    appState.filterOrg = e.target.value;
+                    renderTaskTable();
+                });
+                document.getElementById('filterStatus').addEventListener('change', (e) => {
+                    appState.filterStatus = e.target.value;
+                    renderTaskTable();
+                });
+
+                document.getElementById('closeTaskModal').addEventListener('click', closeTaskModalFn);
+                document.getElementById('cancelTaskModal').addEventListener('click', closeTaskModalFn);
+                document.getElementById('saveTaskModal').addEventListener('click', saveCurrentTask);
+                document.getElementById('readOnlyToggle').addEventListener('change', (e) => {
+                    appState.isReadOnly = e.target.checked;
+                    const formElements = document.querySelectorAll('#taskModal input, #taskModal select, #taskModal textarea');
+                    formElements.forEach(el => {
+                        if (el.id !== 'readOnlyToggle') {
+                            el.disabled = appState.isReadOnly;
+                        }
+                    });
+                    renderSubtasks();
+                    renderLinkedTasks();
+                });
+                document.getElementById('editProgress').addEventListener('input', (e) => {
+                    document.getElementById('editProgressValue').textContent = `${e.target.value}%`;
+                });
+                document.getElementById('editActualHours').addEventListener('input', updateCostDisplay);
+                document.getElementById('autoProgress').addEventListener('change', (e) => {
+                    if (e.target.checked) updateAutoProgress();
+                });
+                document.getElementById('btnAddSubtask').addEventListener('click', () => {
+                    appState.currentSubtasks.push({ id: `sub-${Date.now()}`, title: 'Новая подзадача', done: false });
+                    renderSubtasks();
+                });
+                document.getElementById('btnAddLinkedTask').addEventListener('click', () => {
+                    const linkId = prompt('Введите ID связанной задачи:');
+                    if (linkId && !appState.currentLinkedTasks.includes(linkId)) {
+                        appState.currentLinkedTasks.push(linkId);
+                        renderLinkedTasks();
+                    }
+                });
+                document.getElementById('btnSendComment').addEventListener('click', () => {
+                    const text = document.getElementById('newCommentText').value.trim();
+                    if (!text) return;
+                    appState.currentComments.push({
+                        author: appState.currentUser.displayName,
+                        text: text,
+                        timestamp: new Date().toISOString()
+                    });
+                    document.getElementById('newCommentText').value = '';
+                    renderComments();
+                });
+                document.getElementById('btnDeleteTask').addEventListener('click', async () => {
+                    if (confirm('Удалить эту задачу?')) {
+                        await storage.deleteTask(appState.editingTaskId);
+                        appState.tasks = appState.tasks.filter(t => t.id !== appState.editingTaskId);
+                        renderAll();
+                        closeTaskModalFn();
+                    }
+                });
+
+                document.getElementById('btnNewTask').addEventListener('click', () => {
+                    document.getElementById('newTaskModal').classList.remove('hidden');
+                    populateAssigneeSelect('newTaskAssignee', appState.currentUser.org);
+                    document.getElementById('newTaskAssignee').value = '';
+
+                    const orgSelect = document.getElementById('newTaskOrg');
+                    if (!appState.currentUser.isAdmin) {
+                        orgSelect.value = appState.currentUser.org;
+                        orgSelect.disabled = true;
+                    } else {
+                        orgSelect.disabled = false;
+                    }
+                });
+                document.getElementById('cancelNewTask').addEventListener('click', () => {
+                    document.getElementById('newTaskModal').classList.add('hidden');
+                });
+                document.getElementById('saveNewTask').addEventListener('click', async () => {
+                    const title = document.getElementById('newTaskTitle').value.trim();
+                    if (!title) { alert('Название задачи обязательно'); return; }
+
+                    const org = appState.currentUser.isAdmin ? document.getElementById('newTaskOrg').value : appState.currentUser.org;
+
+                    const newTask = {
+                        title: title,
+                        description: document.getElementById('newTaskDescription').value,
+                        organization: org,
+                        priority: document.getElementById('newTaskPriority').value,
+                        assignee_id: parseInt(document.getElementById('newTaskAssignee').value) || null,
+                        status: document.getElementById('newTaskStatus').value,
+                        planned_hours: parseFloat(document.getElementById('newTaskPlanned').value) || 0,
+                        actual_hours: parseFloat(document.getElementById('newTaskActual').value) || 0,
+                        progress: 0,
+                        subtasks: [],
+                        linked_tasks: [],
+                        comments: [],
+                        history: [{ timestamp: new Date().toISOString(), action: 'Создана задача', user: appState.currentUser.displayName }]
+                    };
+
+                    await storage.saveTask(newTask);
+                    appState.tasks.push(newTask);
+                    renderAll();
+                    document.getElementById('newTaskModal').classList.add('hidden');
+                    document.getElementById('newTaskTitle').value = '';
+                    document.getElementById('newTaskDescription').value = '';
+                });
+
+                document.getElementById('btnExportJSON').addEventListener('click', () => {
+                    const exportData = {
+                        employees: getVisibleEmployees(),
+                        tasks: getVisibleTasks()
+                    };
+                    document.getElementById('jsonOutput').value = JSON.stringify(exportData, null, 2);
+                    document.getElementById('jsonModal').classList.remove('hidden');
+                });
+                document.getElementById('btnOrgJSON').addEventListener('click', () => {
+                    const orgData = getVisibleEmployees().reduce((acc, emp) => {
+                        if (!acc[emp.organization]) acc[emp.organization] = [];
+                        acc[emp.organization].push(emp);
+                        return acc;
+                    }, {});
+                    document.getElementById('jsonOutput').value = JSON.stringify(orgData, null, 2);
+                    document.getElementById('jsonModal').classList.remove('hidden');
+                });
+                document.getElementById('closeJsonModal').addEventListener('click', () => document.getElementById('jsonModal').classList.add('hidden'));
+                document.getElementById('closeJsonModalBtn').addEventListener('click', () => document.getElementById('jsonModal').classList.add('hidden'));
+                document.getElementById('copyJsonBtn').addEventListener('click', () => {
+                    const textarea = document.getElementById('jsonOutput');
+                    textarea.select();
+                    document.execCommand('copy');
+                    alert('JSON скопирован в буфер обмена!');
+                });
+
+                document.getElementById('btnClearHistory').addEventListener('click', () => {
+                    if (confirm('Очистить всю историю изменений?')) {
+                        appState.tasks.forEach(taskItem => { taskItem.history = []; });
+                        renderHistory();
+                    }
+                });
+            }
+
+            function showDashboard() {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('currentUserDisplay').textContent = appState.currentUser.displayName + (appState.currentUser.isAdmin ? ' (Админ)' : '');
+                updateFilterOptions();
+                renderAll();
+            }
+
+            initApp();
+        })();
+    </script>
+</body>
+
+</html>
