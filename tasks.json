@@ -1,0 +1,21 @@
+{
+  "tasks": [
+    {
+      "id": "1781696657067",
+      "title": "1",
+      "description": "2",
+      "org": "РАРУС",
+      "department": "ИТ",
+      "priority": "Средний",
+      "assignee": "Стас",
+      "status": "К выполнению",
+      "progress": 0,
+      "plannedHours": 3,
+      "actualHours": 0,
+      "hourlyRate": 2500,
+      "createdAt": "2026-06-17T11:44:17.067Z"
+    }
+  ],
+  "exportDate": "2026-06-17T11:44:25.811Z",
+  "organization": "admin"
+}
