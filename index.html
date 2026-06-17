@@ -13,7 +13,6 @@
             --primary: #6a8caf;
             --primary-dark: #557694;
             --primary-soft: #e8eef4;
-            --accent: #b8956a;
             --text: #3d4550;
             --text-muted: #7a8290;
             --border: #e6e0d5;
@@ -64,11 +63,7 @@
             margin-bottom: 24px;
         }
 
-        .brand-logo {
-            width: 72px;
-            height: 72px;
-            margin-bottom: 12px;
-        }
+        .brand-logo { width: 72px; height: 72px; margin-bottom: 12px; }
 
         .brand-name {
             font-size: 18px;
@@ -78,11 +73,7 @@
             letter-spacing: 0.3px;
         }
 
-        .brand-sub {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
+        .brand-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
         .login-box h1 {
             text-align: center;
@@ -90,13 +81,6 @@
             color: var(--text);
             font-size: 22px;
             font-weight: 600;
-        }
-
-        .login-box > p {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 28px;
-            font-size: 13px;
         }
 
         .form-group { margin-bottom: 18px; }
@@ -206,17 +190,8 @@
             margin-bottom: 14px;
         }
 
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-logo {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-        }
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        .header-logo { width: 44px; height: 44px; flex-shrink: 0; }
 
         .header-brand-text h1 {
             font-size: 18px;
@@ -225,25 +200,22 @@
             line-height: 1.2;
         }
 
-        .header-brand-text .brand-sub {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
+        .header-brand-text .brand-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .user-info span {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
+        .user-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .user-info span { color: var(--text-muted); font-size: 13px; }
         .user-info strong { color: var(--text); }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--primary-soft);
+            color: var(--primary-dark);
+            margin-left: 6px;
+        }
 
         .btn-logout {
             background: var(--surface);
@@ -268,11 +240,7 @@
             border-color: var(--primary);
         }
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; }
 
         .filter-select {
             padding: 8px 12px;
@@ -285,12 +253,7 @@
             font-family: inherit;
         }
 
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
+        .actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
 
         .btn-action {
             background: var(--surface);
@@ -314,8 +277,8 @@
 
         .btn-success:hover { background: #6d9570; }
 
-        /* ===== GitHub Config ===== */
-        .github-config {
+        /* ===== Sync Config ===== */
+        .sync-config {
             background: var(--surface);
             padding: 16px 20px;
             border-radius: 12px;
@@ -324,21 +287,130 @@
             border: 1px solid var(--border);
         }
 
-        .github-config h3 {
+        .sync-config h3 {
             margin-bottom: 12px;
             color: var(--text);
             font-size: 15px;
             font-weight: 600;
         }
 
-        .github-config .form-row {
+        .sync-config .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        .github-config .form-group { margin-bottom: 12px; }
-        .github-config .form-group:last-child { margin-bottom: 0; }
+        .sync-config .form-group { margin-bottom: 12px; }
+        .sync-config .form-group:last-child { margin-bottom: 0; }
+
+        /* ===== Chart ===== */
+        .chart-panel {
+            background: var(--surface);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .chart-panel h3 {
+            margin-bottom: 14px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-panel h3 .chart-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .chart-item {
+            padding: 12px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-item-label {
+            font-size: 13px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .chart-item-value {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .chart-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .chart-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .chart-summary-item {
+            text-align: center;
+            padding: 10px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+        }
+
+        .chart-summary-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            line-height: 1;
+        }
+
+        .chart-summary-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
 
         /* ===== Table ===== */
         .table-container {
@@ -392,23 +464,10 @@
         .priority-medium { color: #9a7a3d; font-weight: 600; }
         .priority-low { color: #5a7d5c; font-weight: 600; }
 
-        .org-cell {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .org-cell { display: flex; align-items: center; gap: 8px; }
+        .org-logo { width: 22px; height: 22px; flex-shrink: 0; }
 
-        .org-logo {
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-            margin-right: 4px;
-        }
+        .btn-sm { padding: 5px 10px; font-size: 12px; margin-right: 4px; }
 
         .btn-edit {
             background: var(--primary-soft);
@@ -478,11 +537,7 @@
 
         .close-btn:hover { color: var(--text); }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .modal-actions {
             display: flex;
@@ -506,6 +561,51 @@
         }
 
         .btn-save:hover { background: #6d9570; }
+
+        /* ===== Contacts ===== */
+        .contacts-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .contact-logo {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .contact-info { flex: 1; min-width: 0; }
+
+        .contact-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .contact-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .contact-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .contact-link:hover { text-decoration: underline; }
 
         /* ===== Instruction ===== */
         .instruction-page {
@@ -545,22 +645,9 @@
             border-left: 3px solid var(--primary);
         }
 
-        .instruction-body p {
-            color: var(--text);
-            margin-bottom: 12px;
-            line-height: 1.7;
-        }
-
-        .instruction-body ul {
-            margin-left: 22px;
-            margin-bottom: 12px;
-        }
-
-        .instruction-body li {
-            color: var(--text);
-            margin-bottom: 6px;
-            line-height: 1.6;
-        }
+        .instruction-body p { color: var(--text); margin-bottom: 12px; line-height: 1.7; }
+        .instruction-body ul { margin-left: 22px; margin-bottom: 12px; }
+        .instruction-body li { color: var(--text); margin-bottom: 6px; line-height: 1.6; }
 
         .instruction-body code {
             background: var(--bg-soft);
@@ -570,19 +657,10 @@
             color: var(--primary-dark);
         }
 
-        .btn-back {
-            background: var(--primary);
-            color: white;
-            border: 1px solid var(--primary);
-        }
-
+        .btn-back { background: var(--primary); color: white; border: 1px solid var(--primary); }
         .btn-back:hover { background: var(--primary-dark); }
 
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text-muted);
-        }
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
 
         /* ===== Toast ===== */
         .toast {
@@ -605,12 +683,21 @@
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
 
+        /* ===== Access denied notice ===== */
+        .access-notice {
+            background: #fff8e6;
+            border: 1px solid #f0d89a;
+            color: #8a6a1f;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
         /* ===== Mobile ===== */
         @media (max-width: 768px) {
             .container { padding: 12px; }
-
             .login-box { padding: 28px 20px; }
-
             .header { padding: 14px; }
 
             .header-top {
@@ -620,35 +707,19 @@
             }
 
             .header-brand-text h1 { font-size: 16px; }
-
-            .user-info {
-                justify-content: space-between;
-                width: 100%;
-            }
-
+            .user-info { justify-content: space-between; width: 100%; }
             .filters { flex-direction: column; }
             .filter-select { width: 100%; }
-
             .actions { flex-direction: column; }
             .actions .btn { width: 100%; }
-
-            .github-config .form-row { grid-template-columns: 1fr; }
-
+            .sync-config .form-row { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
-
             .modal-content { padding: 20px; }
-
             .modal-actions { flex-direction: column-reverse; }
             .modal-actions .btn { width: 100%; }
-
             .instruction-body { padding: 18px; }
             .instruction-header { padding: 14px 18px; }
-
-            .toast {
-                left: 12px;
-                right: 12px;
-                max-width: none;
-            }
+            .toast { left: 12px; right: 12px; max-width: none; }
         }
 
         @media (max-width: 480px) {
@@ -703,7 +774,8 @@
                         </div>
                     </div>
                     <div class="user-info">
-                        <span>Пользователь: <strong id="currentUser"></strong></span>
+                        <span>Пользователь: <strong id="currentUser"></strong><span class="role-badge" id="userRole"></span></span>
+                        <button class="btn btn-secondary" onclick="showContacts()">Контакты</button>
                         <button class="btn btn-secondary" onclick="showInstruction()">Инструкция</button>
                         <button class="btn btn-logout" onclick="logout()">Выйти</button>
                     </div>
@@ -732,22 +804,23 @@
 
             <div class="actions">
                 <button class="btn btn-success" onclick="openTaskModal()">+ Новая задача</button>
-                <button class="btn btn-action" onclick="syncPush()">Синхронизация (Push)</button>
-                <button class="btn btn-action" onclick="syncPull()">Загрузить из облака (Pull)</button>
-                <button class="btn btn-action" onclick="exportJSON()">Экспорт JSON</button>
-                <button class="btn btn-action" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
+                <button class="btn btn-action admin-only" onclick="syncPush()">Синхронизация (Push)</button>
+                <button class="btn btn-action admin-only" onclick="syncPull()">Загрузить из облака (Pull)</button>
+                <button class="btn btn-action admin-only" onclick="exportJSON()">Экспорт JSON</button>
+                <button class="btn btn-action admin-only" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
                 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
             </div>
 
-            <div class="github-config">
-                <h3>Настройки GitHub</h3>
+            <!-- Sync config (admin only) -->
+            <div class="sync-config admin-only" id="syncConfig">
+                <h3>Ключ синхронизации</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Путь репозитория (owner/repo)</label>
                         <input type="text" id="githubRepo" value="Labenskij/sdlc" placeholder="owner/repo">
                     </div>
                     <div class="form-group">
-                        <label>GitHub Personal Access Token</label>
+                        <label>Персональный ключ доступа</label>
                         <input type="password" id="githubToken" placeholder="ghp_...">
                     </div>
                 </div>
@@ -755,6 +828,15 @@
                     <label>Целевой файл синхронизации (фиксирован)</label>
                     <input type="text" id="githubFile" value="tasks.json" readonly>
                 </div>
+            </div>
+
+            <!-- Chart panel -->
+            <div class="chart-panel" id="chartPanel">
+                <h3>
+                    <span id="chartTitle">График выполнения задач</span>
+                    <span class="chart-subtitle" id="chartSubtitle"></span>
+                </h3>
+                <div id="chartContent"></div>
             </div>
 
             <div class="table-container">
@@ -794,21 +876,21 @@
                 <h2>Инструкция и регламент работы с системой</h2>
 
                 <h3>1. Общие положения</h3>
-                <p>Система управления задачами предприятия «Черноморский молокозавод» предназначена для организации, отслеживания и контроля выполнения задач в рамках нескольких организаций. Система поддерживает синхронизацию с GitHub для резервного копирования и совместной работы.</p>
+                <p>Система управления задачами предприятия «Черноморский молокозавод» предназначена для организации, отслеживания и контроля выполнения задач в рамках нескольких организаций. Система поддерживает облачную синхронизацию для резервного копирования и совместной работы.</p>
 
-                <h3>2. Авторизация в системе</h3>
+                <h3>2. Роли и права доступа</h3>
                 <ul>
-                    <li>Для входа используйте учетные данные вашей организации</li>
+                    <li><strong>Администратор</strong> — полный доступ: просмотр, создание, редактирование и удаление всех задач, настройка синхронизации, экспорт/импорт данных</li>
+                    <li><strong>Пользователь организации</strong> — доступ только к своим задачам: создание, просмотр, редактирование и удаление записей, созданных под его учётной записью</li>
                     <li>Доступные организации: РАРУС, Градиент, Кутузовцы, Черноморский молокозавод, ЧЗПТ</li>
-                    <li>Администратор имеет доступ ко всем организациям</li>
                 </ul>
 
                 <h3>3. Создание задачи</h3>
                 <ul>
                     <li>Нажмите кнопку «Новая задача»</li>
-                    <li>Заполните обязательные поля: Название, Организация, Ответственный</li>
+                    <li>Заполните обязательные поля: Название, Ответственный</li>
                     <li>Укажите приоритет, статус, плановые часы и ставку</li>
-                    <li>Нажмите «Сохранить задачу»</li>
+                    <li>Задача автоматически закрепляется за вашей учётной записью</li>
                 </ul>
 
                 <h3>4. Статусы задач</h3>
@@ -823,68 +905,37 @@
 
                 <h3>5. Приоритеты задач</h3>
                 <ul>
-                    <li><strong>Высокий</strong> — критически важная задача, требует немедленного выполнения</li>
-                    <li><strong>Средний</strong> — стандартная задача с обычными сроками</li>
-                    <li><strong>Низкий</strong> — задача может быть выполнена в свободное время</li>
+                    <li><strong>Высокий</strong> — критически важная задача</li>
+                    <li><strong>Средний</strong> — стандартная задача</li>
+                    <li><strong>Низкий</strong> — задача в свободное время</li>
                 </ul>
 
-                <h3>6. Синхронизация с GitHub</h3>
-                <p>Синхронизация выполняется с репозиторием <code>Labenskij/sdlc</code>, файл <code>tasks.json</code>.</p>
+                <h3>6. Облачная синхронизация (только для администратора)</h3>
                 <ul>
-                    <li>Введите GitHub Personal Access Token с правами <code>repo</code></li>
+                    <li>Введите персональный ключ доступа</li>
                     <li>Целевой файл синхронизации фиксирован — <code>tasks.json</code></li>
-                    <li>Используйте «Синхронизация (Push)» для отправки данных в GitHub</li>
-                    <li>Используйте «Загрузить из облака (Pull)» для получения данных из GitHub</li>
-                    <li>При Push система автоматически определяет SHA файла для корректного обновления</li>
+                    <li>«Синхронизация (Push)» — отправка данных в облако</li>
+                    <li>«Загрузить из облака (Pull)» — получение данных из облака</li>
                 </ul>
 
-                <h3>7. Экспорт и импорт данных</h3>
+                <h3>7. График выполнения</h3>
+                <p>Панель графика отображает распределение задач по статусам:</p>
                 <ul>
-                    <li><strong>Экспорт JSON</strong> — сохраняет все задачи в JSON файл</li>
-                    <li><strong>Загрузить JSON</strong> — импортирует задачи из JSON файла</li>
-                    <li>Формат файла совместим с GitHub синхронизацией</li>
-                    <li>Система автоматически нормализует ключи и значения при импорте (удаляет лишние пробелы)</li>
+                    <li>Для администратора — общая статистика по всем задачам</li>
+                    <li>Для пользователей — статистика только по их задачам</li>
                 </ul>
 
                 <h3>8. Расчет стоимости</h3>
-                <p>Стоимость задачи рассчитывается автоматически:</p>
                 <ul>
                     <li>Плановая стоимость = Плановые часы × Ставка часа</li>
                     <li>Фактическая стоимость = Фактические часы × Ставка часа</li>
                 </ul>
 
-                <h3>9. Фильтрация задач</h3>
-                <ul>
-                    <li>Используйте фильтры для отображения задач по организации</li>
-                    <li>Фильтруйте задачи по статусу для быстрого доступа</li>
-                    <li>Фильтры можно комбинировать</li>
-                </ul>
+                <h3>9. Контакты</h3>
+                <p>Кнопка «Контакты» в шапке содержит информацию по всем организациям и способам связи.</p>
 
-                <h3>10. Редактирование и удаление</h3>
-                <ul>
-                    <li>Нажмите «Редактировать» для изменения задачи</li>
-                    <li>Нажмите «Удалить» для удаления задачи (требуется подтверждение)</li>
-                    <li>Все изменения сохраняются автоматически в локальном хранилище</li>
-                </ul>
-
-                <h3>11. Рекомендации по работе</h3>
-                <ul>
-                    <li>Регулярно синхронизируйте данные с GitHub для резервного копирования</li>
-                    <li>Обновляйте статус задач по мере выполнения</li>
-                    <li>Указывайте фактические часы для контроля затрат</li>
-                    <li>Используйте приоритеты для планирования работы</li>
-                    <li>Проводите ревью задач перед утверждением</li>
-                </ul>
-
-                <h3>12. Технические требования</h3>
-                <ul>
-                    <li>Современный веб-браузер (Chrome, Firefox, Safari, Edge)</li>
-                    <li>Стабильное интернет-соединение для синхронизации</li>
-                    <li>Доступ к GitHub API для облачной синхронизации</li>
-                </ul>
-
-                <h3>13. Поддержка</h3>
-                <p>При возникновении вопросов или проблем обращайтесь к администратору системы предприятия «Черноморский молокозавод».</p>
+                <h3>10. Поддержка</h3>
+                <p>При возникновении вопросов обращайтесь к администратору системы предприятия «Черноморский молокозавод».</p>
             </div>
         </div>
     </div>
@@ -909,13 +960,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Организация</label>
-                        <select id="taskOrg" class="filter-select" style="width:100%">
-                            <option value="РАРУС">РАРУС</option>
-                            <option value="Градиент">Градиент</option>
-                            <option value="Кутузовцы">Кутузовцы</option>
-                            <option value="Черноморский молокозавод">Черноморский молокозавод</option>
-                            <option value="ЧЗПТ">ЧЗПТ</option>
-                        </select>
+                        <select id="taskOrg" class="filter-select" style="width:100%"></select>
                     </div>
                     <div class="form-group">
                         <label>Отдел</label>
@@ -985,11 +1030,22 @@
                 <h2>Подтверждение действия</h2>
                 <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
             </div>
-            <p id="confirmMessage">Вы уверены, что хотите выполнить это действие?</p>
+            <p id="confirmMessage">Вы уверены?</p>
             <div class="modal-actions">
                 <button class="btn btn-cancel" onclick="closeConfirmModal()">Отмена</button>
-                <button class="btn btn-delete" id="confirmBtn" onclick="confirmAction()">Подтвердить</button>
+                <button class="btn btn-delete" onclick="confirmAction()">Подтвердить</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Contacts Modal -->
+    <div class="modal" id="contactsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Контактная информация</h2>
+                <button class="close-btn" onclick="closeContacts()">&times;</button>
+            </div>
+            <div class="contacts-list" id="contactsList"></div>
         </div>
     </div>
 
@@ -997,13 +1053,14 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // === Constants ===
         const CREDENTIALS = {
-            'rarus': 'rarus2024',
-            'gradient': 'grad2024',
-            'kutuzovtsy': 'kut2024',
-            'crimea': 'crimea2024',
-            'czpt': 'czpt2024',
-            'admin': 'superadmin'
+            'rarus': { password: 'rarus2024', org: 'РАРУС', name: 'РАРУС' },
+            'gradient': { password: 'grad2024', org: 'Градиент', name: 'Градиент' },
+            'kutuzovtsy': { password: 'kut2024', org: 'Кутузовцы', name: 'Кутузовцы' },
+            'crimea': { password: 'crimea2024', org: 'Черноморский молокозавод', name: 'Черноморский молокозавод' },
+            'czpt': { password: 'czpt2024', org: 'ЧЗПТ', name: 'ЧЗПТ' },
+            'admin': { password: 'superadmin', org: null, name: 'Администратор' }
         };
 
         const ORG_LOGOS = {
@@ -1020,28 +1077,55 @@
             'Завершено': 'status-done'
         };
 
+        const STATUS_COLOR = {
+            'К выполнению': '#6a8caf',
+            'В работе': '#c9a66b',
+            'На ревью': '#9a7ab0',
+            'Утверждено': '#7fa882',
+            'Заблокировано': '#c27878',
+            'Завершено': '#4a6d4c'
+        };
+
         const PRIORITY_CLASS = {
             'Высокий': 'priority-high',
             'Средний': 'priority-medium',
             'Низкий': 'priority-low'
         };
 
+        const CONTACTS = [
+            { org: 'Черноморский молокозавод', login: 'crimea', site: 'https://crimeamilk.ru/', logo: ORG_LOGOS['Черноморский молокозавод'], desc: 'Предприятие молочной промышленности' },
+            { org: 'ЧЗПТ', login: 'czpt', site: 'https://crimeamilk.ru/', logo: ORG_LOGOS['ЧЗПТ'], desc: 'Черноморский завод пластиковой тары' },
+            { org: 'РАРУС', login: 'rarus', desc: 'Партнёр предприятия' },
+            { org: 'Градиент', login: 'gradient', desc: 'Партнёр предприятия' },
+            { org: 'Кутузовцы', login: 'kutuzovtsy', desc: 'Партнёр предприятия' }
+        ];
+
         const SYNC_FILE = 'tasks.json';
 
+        // === State ===
         let tasks = [];
         let currentUser = '';
+        let currentOrg = null;
         let pendingAction = null;
 
-        // === Utility ===
+        // === Helpers ===
+        const isAdmin = () => currentUser === 'admin';
+        const $ = (id) => document.getElementById(id);
+
         function showToast(message, type = '') {
-            const toast = document.getElementById('toast');
+            const toast = $('toast');
             toast.textContent = message;
             toast.className = 'toast show ' + type;
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Нормализация: удаляет пробелы в ключах И строковых значениях
-        // (решает проблему с битым JSON, где ключи/значения имеют лишние пробелы)
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
         function normalizeValue(v) {
             if (typeof v === 'string') return v.trim();
             if (Array.isArray(v)) return v.map(normalizeValue);
@@ -1054,34 +1138,18 @@
             const result = {};
             for (const key in obj) {
                 if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                    const cleanKey = key.trim();
-                    result[cleanKey] = normalizeValue(obj[key]);
+                    result[key.trim()] = normalizeValue(obj[key]);
                 }
             }
             return result;
         }
 
-        function escapeHtml(str) {
-            if (str === null || str === undefined) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        // Корректное base64 декодирование UTF-8
         function decodeBase64(b64) {
-            // GitHub API возвращает content с переносами строк — удаляем их
-            const clean = b64.replace(/\s/g, '');
-            const bin = atob(clean);
-            // Декодируем UTF-8 через Uint8Array
+            const bin = atob(b64.replace(/\s/g, ''));
             const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
             return new TextDecoder('utf-8').decode(bytes);
         }
 
-        // Корректное base64 кодирование UTF-8
         function encodeBase64(str) {
             const bytes = new TextEncoder().encode(str);
             let bin = '';
@@ -1089,77 +1157,148 @@
             return btoa(bin);
         }
 
-        // === Login ===
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
+        // Проверка прав на задачу: админ — всё, пользователь — только свои
+        function canManageTask(task) {
+            if (isAdmin()) return true;
+            return task && task.owner === currentUser;
+        }
 
-            if (CREDENTIALS[username] && CREDENTIALS[username] === password) {
-                currentUser = username === 'admin' ? 'Администратор' : username;
-                document.getElementById('currentUser').textContent = currentUser;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appScreen').classList.add('active');
+        // Фильтр задач для отображения
+        function getVisibleTasks() {
+            return isAdmin() ? tasks : tasks.filter(t => t.owner === currentUser);
+        }
+
+        // Миграция: если у задачи нет owner — считаем её общей (видна только админу)
+        function migrateTasks(arr) {
+            return arr.map(t => ({
+                ...t,
+                owner: t.owner || 'admin'
+            }));
+        }
+
+        // === Access control: показать/скрыть элементы для admin-only ===
+        function applyAccessControl() {
+            const adminOnly = document.querySelectorAll('.admin-only');
+            adminOnly.forEach(el => {
+                el.style.display = isAdmin() ? '' : 'none';
+            });
+
+            $('userRole').textContent = isAdmin() ? 'Администратор' : currentOrg || '';
+        }
+
+        // === Login ===
+        $('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = $('username').value.trim().toLowerCase();
+            const password = $('password').value;
+            const cred = CREDENTIALS[username];
+
+            if (cred && cred.password === password) {
+                currentUser = username;
+                currentOrg = cred.org;
+                $('currentUser').textContent = cred.name;
+                $('loginScreen').style.display = 'none';
+                $('appScreen').classList.add('active');
+                applyAccessControl();
+                populateOrgSelect();
                 loadTasks();
             } else {
-                const err = document.getElementById('errorMsg');
+                const err = $('errorMsg');
                 err.classList.add('show');
                 setTimeout(() => err.classList.remove('show'), 3000);
             }
         });
 
         function logout() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appScreen').classList.remove('active');
-            document.getElementById('instructionPage').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            $('loginScreen').style.display = 'flex';
+            $('appScreen').classList.remove('active');
+            $('instructionPage').classList.remove('active');
+            $('username').value = '';
+            $('password').value = '';
+            currentUser = '';
+            currentOrg = null;
         }
 
         function showInstruction() {
-            document.getElementById('appScreen').classList.remove('active');
-            document.getElementById('instructionPage').classList.add('active');
+            $('appScreen').classList.remove('active');
+            $('instructionPage').classList.add('active');
             window.scrollTo(0, 0);
         }
 
         function hideInstruction() {
-            document.getElementById('instructionPage').classList.remove('active');
-            document.getElementById('appScreen').classList.add('active');
+            $('instructionPage').classList.remove('active');
+            $('appScreen').classList.add('active');
+        }
+
+        // === Contacts ===
+        function showContacts() {
+            const list = $('contactsList');
+            list.innerHTML = CONTACTS.map(c => {
+                const logo = c.logo ? `<img src="${c.logo}" class="contact-logo" alt="">` : `<div class="contact-logo" style="display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary-dark);">${escapeHtml(c.org.charAt(0))}</div>`;
+                const site = c.site ? `<a href="${c.site}" target="_blank" class="contact-link">${escapeHtml(c.site)}</a>` : '';
+                return `
+                    <div class="contact-item">
+                        ${logo}
+                        <div class="contact-info">
+                            <div class="contact-name">${escapeHtml(c.org)}</div>
+                            <div class="contact-meta">${escapeHtml(c.desc || '')}</div>
+                            ${site ? `<div class="contact-meta">${site}</div>` : ''}
+                            <div class="contact-meta">Логин: <strong>${escapeHtml(c.login)}</strong></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            $('contactsModal').classList.add('active');
+        }
+
+        function closeContacts() {
+            $('contactsModal').classList.remove('active');
         }
 
         // === Tasks ===
         function loadTasks() {
             try {
                 const stored = localStorage.getItem('tasks');
-                tasks = stored ? JSON.parse(stored) : [];
+                tasks = stored ? migrateTasks(JSON.parse(stored)) : [];
                 if (!Array.isArray(tasks)) tasks = [];
             } catch (e) {
                 tasks = [];
             }
             renderTasks();
+            renderChart();
         }
 
         function saveTasks() {
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
-        function filterTasks() { renderTasks(); }
+        function filterTasks() {
+            renderTasks();
+            renderChart();
+        }
 
         function getFilteredTasks() {
-            const orgFilter = document.getElementById('orgFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            return tasks.filter(t =>
+            const orgFilter = $('orgFilter').value;
+            const statusFilter = $('statusFilter').value;
+            const visible = getVisibleTasks();
+            return visible.filter(t =>
                 (!orgFilter || t.org === orgFilter) &&
                 (!statusFilter || t.status === statusFilter)
             );
         }
 
         function renderTasks() {
-            const tbody = document.getElementById('tasksTable');
+            const tbody = $('tasksTable');
             const filtered = getFilteredTasks();
+            const visibleTotal = getVisibleTasks().length;
+
+            if (visibleTotal === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">У вас пока нет задач. Нажмите «Новая задача», чтобы создать первую.</td></tr>';
+                return;
+            }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Задачи не найдены.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Задачи не найдены по выбранным фильтрам.</td></tr>';
                 return;
             }
 
@@ -1170,6 +1309,12 @@
                 const actualCost = ((task.actualHours || 0) * (task.hourlyRate || 0)).toLocaleString('ru-RU');
                 const logo = ORG_LOGOS[task.org] ? `<img src="${ORG_LOGOS[task.org]}" class="org-logo" alt="">` : '';
                 const safeId = escapeHtml(task.id);
+                const canManage = canManageTask(task);
+
+                const actions = canManage
+                    ? `<button class="btn btn-sm btn-edit" onclick="editTask('${safeId}')">Редактировать</button>
+                       <button class="btn btn-sm btn-delete" onclick="deleteTask('${safeId}')">Удалить</button>`
+                    : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
 
                 return `
                     <tr>
@@ -1182,63 +1327,166 @@
                             ${task.plannedHours || 0}ч / ${plannedCost}₽<br>
                             <small style="color:var(--text-muted)">Факт: ${task.actualHours || 0}ч / ${actualCost}₽</small>
                         </td>
-                        <td>
-                            <button class="btn btn-sm btn-edit" onclick="editTask('${safeId}')">Редактировать</button>
-                            <button class="btn btn-sm btn-delete" onclick="deleteTask('${safeId}')">Удалить</button>
-                        </td>
+                        <td>${actions}</td>
                     </tr>
                 `;
             }).join('');
         }
 
+        // === Chart ===
+        function renderChart() {
+            const visible = getVisibleTasks();
+            const content = $('chartContent');
+            const title = $('chartTitle');
+            const subtitle = $('chartSubtitle');
+
+            title.textContent = isAdmin() ? 'График выполнения задач' : 'Мои показатели';
+            subtitle.textContent = isAdmin()
+                ? `Всего задач: ${tasks.length}`
+                : `Ваших задач: ${visible.length}`;
+
+            if (visible.length === 0) {
+                content.innerHTML = '<div class="chart-empty">Нет задач для отображения</div>';
+                return;
+            }
+
+            const statuses = Object.keys(STATUS_CLASS);
+            const counts = {};
+            let totalPlanned = 0, totalActual = 0, totalCost = 0;
+
+            statuses.forEach(s => counts[s] = 0);
+            visible.forEach(t => {
+                if (counts[t.status] !== undefined) counts[t.status]++;
+                totalPlanned += t.plannedHours || 0;
+                totalActual += t.actualHours || 0;
+                totalCost += (t.actualHours || 0) * (t.hourlyRate || 0);
+            });
+
+            const maxCount = Math.max(...Object.values(counts), 1);
+
+            const barsHtml = statuses.map(status => {
+                const count = counts[status];
+                const percent = visible.length > 0 ? Math.round((count / visible.length) * 100) : 0;
+                const width = Math.round((count / maxCount) * 100);
+                const color = STATUS_COLOR[status];
+                return `
+                    <div class="chart-item">
+                        <div class="chart-item-header">
+                            <span class="chart-item-label">${status}</span>
+                            <span class="chart-item-value">${count} · ${percent}%</span>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-bar-fill" style="width:${width}%;background:${color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const summaryHtml = `
+                <div class="chart-summary">
+                    <div class="chart-summary-item">
+                        <div class="chart-summary-value">${visible.length}</div>
+                        <div class="chart-summary-label">Всего задач</div>
+                    </div>
+                    <div class="chart-summary-item">
+                        <div class="chart-summary-value">${totalPlanned}ч</div>
+                        <div class="chart-summary-label">Плановые часы</div>
+                    </div>
+                    <div class="chart-summary-item">
+                        <div class="chart-summary-value">${totalActual}ч</div>
+                        <div class="chart-summary-label">Фактические часы</div>
+                    </div>
+                    <div class="chart-summary-item">
+                        <div class="chart-summary-value">${totalCost.toLocaleString('ru-RU')}₽</div>
+                        <div class="chart-summary-label">Факт. стоимость</div>
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = `<div class="chart-grid">${barsHtml}</div>${summaryHtml}`;
+        }
+
         // === Task Modal ===
+        function populateOrgSelect() {
+            const select = $('taskOrg');
+            const orgs = isAdmin()
+                ? ['РАРУС', 'Градиент', 'Кутузовцы', 'Черноморский молокозавод', 'ЧЗПТ']
+                : [currentOrg];
+            select.innerHTML = orgs.map(o => `<option value="${o}">${o}</option>`).join('');
+        }
+
         function openTaskModal(task = null) {
-            document.getElementById('taskModal').classList.add('active');
-            document.getElementById('taskForm').reset();
+            // Проверка: если не админ и задача не его — запрет
+            if (task && !canManageTask(task)) {
+                showToast('У вас нет прав на редактирование этой задачи', 'error');
+                return;
+            }
+
+            $('taskModal').classList.add('active');
+            $('taskForm').reset();
+            populateOrgSelect();
 
             if (task) {
-                document.getElementById('modalTitle').textContent = 'Редактировать задачу';
-                document.getElementById('taskId').value = task.id;
-                document.getElementById('taskTitle').value = task.title || '';
-                document.getElementById('taskDescription').value = task.description || '';
-                document.getElementById('taskOrg').value = task.org || 'РАРУС';
-                document.getElementById('taskDepartment').value = task.department || 'ИТ';
-                document.getElementById('taskPriority').value = task.priority || 'Средний';
-                document.getElementById('taskAssignee').value = task.assignee || '';
-                document.getElementById('taskStatus').value = task.status || 'К выполнению';
-                document.getElementById('taskProgress').value = task.progress || 0;
-                document.getElementById('taskPlannedHours').value = task.plannedHours || 0;
-                document.getElementById('taskActualHours').value = task.actualHours || 0;
-                document.getElementById('taskHourlyRate').value = task.hourlyRate || 0;
+                $('modalTitle').textContent = 'Редактировать задачу';
+                $('taskId').value = task.id;
+                $('taskTitle').value = task.title || '';
+                $('taskDescription').value = task.description || '';
+                $('taskOrg').value = task.org || (isAdmin() ? 'РАРУС' : currentOrg);
+                $('taskDepartment').value = task.department || 'ИТ';
+                $('taskPriority').value = task.priority || 'Средний';
+                $('taskAssignee').value = task.assignee || '';
+                $('taskStatus').value = task.status || 'К выполнению';
+                $('taskProgress').value = task.progress || 0;
+                $('taskPlannedHours').value = task.plannedHours || 0;
+                $('taskActualHours').value = task.actualHours || 0;
+                $('taskHourlyRate').value = task.hourlyRate || 0;
             } else {
-                document.getElementById('modalTitle').textContent = 'Новая задача';
-                document.getElementById('taskId').value = '';
+                $('modalTitle').textContent = 'Новая задача';
+                $('taskId').value = '';
+                if (!isAdmin() && currentOrg) {
+                    $('taskOrg').value = currentOrg;
+                }
             }
         }
 
         function closeTaskModal() {
-            document.getElementById('taskModal').classList.remove('active');
+            $('taskModal').classList.remove('active');
         }
 
-        document.getElementById('taskForm').addEventListener('submit', (e) => {
+        $('taskForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const id = document.getElementById('taskId').value;
+            const id = $('taskId').value;
             const existing = id ? tasks.find(t => t.id === id) : null;
+
+            // Проверка прав на редактирование
+            if (existing && !canManageTask(existing)) {
+                showToast('У вас нет прав на редактирование этой задачи', 'error');
+                closeTaskModal();
+                return;
+            }
+
+            // Проверка: не-админ не может создать задачу для другой организации
+            const selectedOrg = $('taskOrg').value;
+            if (!isAdmin() && selectedOrg !== currentOrg) {
+                showToast('Вы можете создавать задачи только для своей организации', 'error');
+                return;
+            }
 
             const taskData = {
                 id: id || Date.now().toString(),
-                title: document.getElementById('taskTitle').value.trim(),
-                description: document.getElementById('taskDescription').value.trim(),
-                org: document.getElementById('taskOrg').value,
-                department: document.getElementById('taskDepartment').value,
-                priority: document.getElementById('taskPriority').value,
-                assignee: document.getElementById('taskAssignee').value.trim(),
-                status: document.getElementById('taskStatus').value,
-                progress: parseInt(document.getElementById('taskProgress').value) || 0,
-                plannedHours: parseFloat(document.getElementById('taskPlannedHours').value) || 0,
-                actualHours: parseFloat(document.getElementById('taskActualHours').value) || 0,
-                hourlyRate: parseFloat(document.getElementById('taskHourlyRate').value) || 0,
+                title: $('taskTitle').value.trim(),
+                description: $('taskDescription').value.trim(),
+                org: selectedOrg,
+                department: $('taskDepartment').value,
+                priority: $('taskPriority').value,
+                assignee: $('taskAssignee').value.trim(),
+                status: $('taskStatus').value,
+                progress: parseInt($('taskProgress').value) || 0,
+                plannedHours: parseFloat($('taskPlannedHours').value) || 0,
+                actualHours: parseFloat($('taskActualHours').value) || 0,
+                hourlyRate: parseFloat($('taskHourlyRate').value) || 0,
+                owner: existing ? existing.owner : currentUser,
                 createdAt: existing ? existing.createdAt : new Date().toISOString()
             };
 
@@ -1251,28 +1499,42 @@
 
             saveTasks();
             renderTasks();
+            renderChart();
             closeTaskModal();
             showToast(id ? 'Задача обновлена' : 'Задача создана', 'success');
         });
 
         function editTask(id) {
             const task = tasks.find(t => t.id === id);
-            if (task) openTaskModal(task);
+            if (!task) return;
+            if (!canManageTask(task)) {
+                showToast('У вас нет прав на редактирование этой задачи', 'error');
+                return;
+            }
+            openTaskModal(task);
         }
 
         function deleteTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            if (!canManageTask(task)) {
+                showToast('У вас нет прав на удаление этой задачи', 'error');
+                return;
+            }
+
             pendingAction = () => {
                 tasks = tasks.filter(t => t.id !== id);
                 saveTasks();
                 renderTasks();
+                renderChart();
                 showToast('Задача удалена', 'success');
             };
-            document.getElementById('confirmMessage').textContent = 'Вы уверены, что хотите удалить задачу?';
-            document.getElementById('confirmModal').classList.add('active');
+            $('confirmMessage').textContent = 'Вы уверены, что хотите удалить задачу?';
+            $('confirmModal').classList.add('active');
         }
 
         function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.remove('active');
+            $('confirmModal').classList.remove('active');
             pendingAction = null;
         }
 
@@ -1281,23 +1543,19 @@
             closeConfirmModal();
         }
 
-        // === GitHub Sync ===
+        // === GitHub Sync (admin only) ===
         function getGithubConfig() {
-            const repo = document.getElementById('githubRepo').value.trim();
-            const token = document.getElementById('githubToken').value.trim();
-            return { repo, token };
+            return {
+                repo: $('githubRepo').value.trim(),
+                token: $('githubToken').value.trim()
+            };
         }
 
         async function syncPush() {
+            if (!isAdmin()) { showToast('Доступно только администратору', 'error'); return; }
             const { repo, token } = getGithubConfig();
-            if (!repo || !token) {
-                showToast('Укажите репозиторий и токен GitHub', 'error');
-                return;
-            }
-            if (!/^[^/]+\/[^/]+$/.test(repo)) {
-                showToast('Неверный формат репозитория. Используйте owner/repo', 'error');
-                return;
-            }
+            if (!repo || !token) { showToast('Укажите репозиторий и ключ доступа', 'error'); return; }
+            if (!/^[^/]+\/[^/]+$/.test(repo)) { showToast('Неверный формат: owner/repo', 'error'); return; }
 
             const url = `https://api.github.com/repos/${repo}/contents/${SYNC_FILE}`;
 
@@ -1309,7 +1567,6 @@
                 };
                 const content = encodeBase64(JSON.stringify(data, null, 2));
 
-                // Получаем SHA существующего файла (если есть)
                 let sha = null;
                 try {
                     const getResp = await fetch(url, {
@@ -1320,8 +1577,7 @@
                         }
                     });
                     if (getResp.ok) {
-                        const existing = await getResp.json();
-                        sha = existing.sha;
+                        sha = (await getResp.json()).sha;
                     } else if (getResp.status !== 404) {
                         const err = await getResp.json().catch(() => ({}));
                         throw new Error(err.message || `HTTP ${getResp.status}`);
@@ -1348,7 +1604,7 @@
                 });
 
                 if (response.ok || response.status === 201) {
-                    showToast('Данные отправлены в GitHub', 'success');
+                    showToast('Данные отправлены в облако', 'success');
                 } else {
                     const err = await response.json().catch(() => ({}));
                     throw new Error(err.message || `HTTP ${response.status}`);
@@ -1359,15 +1615,10 @@
         }
 
         async function syncPull() {
+            if (!isAdmin()) { showToast('Доступно только администратору', 'error'); return; }
             const { repo, token } = getGithubConfig();
-            if (!repo || !token) {
-                showToast('Укажите репозиторий и токен GitHub', 'error');
-                return;
-            }
-            if (!/^[^/]+\/[^/]+$/.test(repo)) {
-                showToast('Неверный формат репозитория. Используйте owner/repo', 'error');
-                return;
-            }
+            if (!repo || !token) { showToast('Укажите репозиторий и ключ доступа', 'error'); return; }
+            if (!/^[^/]+\/[^/]+$/.test(repo)) { showToast('Неверный формат: owner/repo', 'error'); return; }
 
             const url = `https://api.github.com/repos/${repo}/contents/${SYNC_FILE}`;
 
@@ -1381,35 +1632,32 @@
                 });
 
                 if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('Файл tasks.json не найден в репозитории. Сначала выполните Push.');
-                    }
+                    if (response.status === 404) throw new Error('Файл не найден. Сначала выполните Push.');
                     const err = await response.json().catch(() => ({}));
                     throw new Error(err.message || `HTTP ${response.status}`);
                 }
 
                 const data = await response.json();
-                if (!data.content) throw new Error('Пустой ответ от GitHub');
+                if (!data.content) throw new Error('Пустой ответ');
 
-                const decoded = decodeBase64(data.content);
-                const parsed = JSON.parse(decoded);
+                const parsed = JSON.parse(decodeBase64(data.content));
                 const normalized = normalizeObject(parsed);
 
-                if (!Array.isArray(normalized.tasks)) {
-                    throw new Error('Неверный формат: отсутствует массив tasks');
-                }
+                if (!Array.isArray(normalized.tasks)) throw new Error('Неверный формат');
 
-                tasks = normalized.tasks;
+                tasks = migrateTasks(normalized.tasks);
                 saveTasks();
                 renderTasks();
+                renderChart();
                 showToast(`Загружено задач: ${tasks.length}`, 'success');
             } catch (error) {
                 showToast('Ошибка Pull: ' + error.message, 'error');
             }
         }
 
-        // === Export/Import ===
+        // === Export/Import (admin only) ===
         function exportJSON() {
+            if (!isAdmin()) { showToast('Доступно только администратору', 'error'); return; }
             const data = {
                 tasks: tasks,
                 exportDate: new Date().toISOString(),
@@ -1426,6 +1674,7 @@
         }
 
         function importJSON(event) {
+            if (!isAdmin()) { showToast('Доступно только администратору', 'error'); return; }
             const file = event.target.files[0];
             if (!file) return;
 
@@ -1434,12 +1683,11 @@
                 try {
                     const raw = JSON.parse(e.target.result);
                     const normalized = normalizeObject(raw);
-                    if (!Array.isArray(normalized.tasks)) {
-                        throw new Error('Неверный формат: отсутствует массив tasks');
-                    }
-                    tasks = normalized.tasks;
+                    if (!Array.isArray(normalized.tasks)) throw new Error('Неверный формат');
+                    tasks = migrateTasks(normalized.tasks);
                     saveTasks();
                     renderTasks();
+                    renderChart();
                     showToast(`Импортировано задач: ${tasks.length}`, 'success');
                 } catch (error) {
                     showToast('Ошибка импорта: ' + error.message, 'error');
@@ -1451,9 +1699,6 @@
         }
 
         // === Init ===
-        loadTasks();
-
-        // Close modals on backdrop click
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -1463,7 +1708,6 @@
             });
         });
 
-        // ESC to close modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
