@@ -14,8 +14,23 @@
       "actualHours": 3,
       "hourlyRate": 1000,
       "createdAt": "2026-06-17T12:28:29.301Z"
+    },
+    {
+      "id": "1781699382293",
+      "title": "Задача 2",
+      "description": "описание 2",
+      "org": "РАРУС",
+      "department": "ИТ",
+      "priority": "Средний",
+      "assignee": "Витя",
+      "status": "К выполнению",
+      "progress": 11,
+      "plannedHours": 5,
+      "actualHours": 3,
+      "hourlyRate": 5000,
+      "createdAt": "2026-06-17T12:29:42.293Z"
     }
   ],
-  "exportDate": "2026-06-17T12:28:50.927Z",
+  "exportDate": "2026-06-17T12:30:01.876Z",
   "organization": "admin"
 }
