@@ -1,21 +1,21 @@
 {
   "tasks": [
     {
-      "id": "1781696657067",
-      "title": "1",
-      "description": "2",
-      "org": "РАРУС",
-      "department": "ИТ",
-      "priority": "Средний",
+      "id": "1781699309301",
+      "title": "Test 1",
+      "description": "Описание 1",
+      "org": "Градиент",
+      "department": "ЧЗПТ",
+      "priority": "Низкий",
       "assignee": "Стас",
-      "status": "К выполнению",
-      "progress": 0,
-      "plannedHours": 3,
-      "actualHours": 0,
-      "hourlyRate": 2500,
-      "createdAt": "2026-06-17T11:44:17.067Z"
+      "status": "В работе",
+      "progress": 12,
+      "plannedHours": 2,
+      "actualHours": 3,
+      "hourlyRate": 1000,
+      "createdAt": "2026-06-17T12:28:29.301Z"
     }
   ],
-  "exportDate": "2026-06-17T11:44:25.811Z",
+  "exportDate": "2026-06-17T12:28:50.927Z",
   "organization": "admin"
 }
