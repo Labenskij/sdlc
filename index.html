@@ -3,93 +3,946 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система управления задачами</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/400.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/500.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/600.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/700.css">
+    <title>Черноморский молокозавод — Система управления задачами</title>
+    <link rel="icon" href="https://crimeamilk.ru/images/logo/logo-new.svg" type="image/svg+xml">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
-        .fade-in { animation: fadeIn 0.2s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .toast { animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        :root {
+            --bg: #f5f1ea;
+            --bg-soft: #fbf8f3;
+            --surface: #ffffff;
+            --primary: #6a8caf;
+            --primary-dark: #557694;
+            --primary-soft: #e8eef4;
+            --accent: #b8956a;
+            --text: #3d4550;
+            --text-muted: #7a8290;
+            --border: #e6e0d5;
+            --success: #7fa882;
+            --danger: #c27878;
+            --warning: #c9a66b;
+            --shadow: 0 2px 8px rgba(106, 140, 175, 0.08);
+            --shadow-lg: 0 8px 24px rgba(106, 140, 175, 0.12);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* ===== Login ===== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--surface);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-logo {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 12px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .login-box > p {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-size: 13px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-soft);
+            color: var(--text);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+        }
+
+        .form-group input[readonly] {
+            background: var(--primary-soft);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 12px;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .error-msg {
+            background: #fbecec;
+            color: var(--danger);
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            display: none;
+            font-size: 13px;
+            border: 1px solid #f0d4d4;
+        }
+
+        .error-msg.show { display: block; }
+
+        .hint {
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border: 1px dashed var(--border);
+        }
+
+        /* ===== App ===== */
+        .app-screen { display: none; }
+        .app-screen.active { display: block; }
+
+        .header {
+            background: var(--surface);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .header-brand-text h1 {
+            font-size: 18px;
+            color: var(--primary-dark);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .header-brand-text .brand-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-info span {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .user-info strong { color: var(--text); }
+
+        .btn-logout {
+            background: var(--surface);
+            color: var(--danger);
+            border: 1px solid #f0d4d4;
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        .btn-logout:hover { background: #fbecec; }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--primary-dark);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--bg-soft);
+            cursor: pointer;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 9px 16px;
+            font-size: 13px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: 1px solid var(--success);
+        }
+
+        .btn-success:hover { background: #6d9570; }
+
+        /* ===== GitHub Config ===== */
+        .github-config {
+            background: var(--surface);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .github-config h3 {
+            margin-bottom: 12px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .github-config .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .github-config .form-group { margin-bottom: 12px; }
+        .github-config .form-group:last-child { margin-bottom: 0; }
+
+        /* ===== Table ===== */
+        .table-container {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+
+        th {
+            background: var(--bg-soft);
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--bg-soft); }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .status-todo { background: #e8eef4; color: #557694; }
+        .status-progress { background: #f5ecd9; color: #9a7a3d; }
+        .status-review { background: #efe4f0; color: #7a5a7d; }
+        .status-approved { background: #e2eddf; color: #5a7d5c; }
+        .status-blocked { background: #f5dede; color: #9a5a5a; }
+        .status-done { background: #dce8dc; color: #4a6d4c; }
+
+        .priority-high { color: #a85a5a; font-weight: 600; }
+        .priority-medium { color: #9a7a3d; font-weight: 600; }
+        .priority-low { color: #5a7d5c; font-weight: 600; }
+
+        .org-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .org-logo {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .btn-edit {
+            background: var(--primary-soft);
+            color: var(--primary-dark);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-edit:hover { background: var(--primary); color: white; }
+
+        .btn-delete {
+            background: var(--surface);
+            color: var(--danger);
+            border: 1px solid #f0d4d4;
+        }
+
+        .btn-delete:hover { background: #fbecec; }
+
+        /* ===== Modal ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(61, 69, 80, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 28px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            color: var(--primary-dark);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            line-height: 1;
+            padding: 0 4px;
+        }
+
+        .close-btn:hover { color: var(--text); }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-cancel:hover { background: var(--bg-soft); }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: 1px solid var(--success);
+        }
+
+        .btn-save:hover { background: #6d9570; }
+
+        /* ===== Instruction ===== */
+        .instruction-page {
+            display: none;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .instruction-page.active { display: block; }
+
+        .instruction-header {
+            background: var(--bg-soft);
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .instruction-body { padding: 28px; }
+
+        .instruction-body h2 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .instruction-body h3 {
+            color: var(--text);
+            margin-top: 22px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            padding-left: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .instruction-body p {
+            color: var(--text);
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .instruction-body ul {
+            margin-left: 22px;
+            margin-bottom: 12px;
+        }
+
+        .instruction-body li {
+            color: var(--text);
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+
+        .instruction-body code {
+            background: var(--bg-soft);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--primary-dark);
+        }
+
+        .btn-back {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-back:hover { background: var(--primary-dark); }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface);
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary);
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            max-width: 320px;
+            font-size: 13px;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 768px) {
+            .container { padding: 12px; }
+
+            .login-box { padding: 28px 20px; }
+
+            .header { padding: 14px; }
+
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .header-brand-text h1 { font-size: 16px; }
+
+            .user-info {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .filters { flex-direction: column; }
+            .filter-select { width: 100%; }
+
+            .actions { flex-direction: column; }
+            .actions .btn { width: 100%; }
+
+            .github-config .form-row { grid-template-columns: 1fr; }
+
+            .form-row { grid-template-columns: 1fr; }
+
+            .modal-content { padding: 20px; }
+
+            .modal-actions { flex-direction: column-reverse; }
+            .modal-actions .btn { width: 100%; }
+
+            .instruction-body { padding: 18px; }
+            .instruction-header { padding: 14px 18px; }
+
+            .toast {
+                left: 12px;
+                right: 12px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-logo { width: 56px; height: 56px; }
+            .header-logo { width: 38px; height: 38px; }
+            .login-box h1 { font-size: 18px; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen">
-
-    <!-- Login Screen -->
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 fade-in">
-            <div class="text-center mb-8">
-                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 mx-auto mb-4">
-                    <rect width="40" height="40" rx="8" fill="#2563EB"/>
-                    <path d="M12 20L18 26L28 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <h1 class="text-2xl font-bold text-gray-900">Система управления задачами</h1>
-                <p class="text-gray-500 mt-2">Введите учетные данные вашей организации</p>
+<body>
+    <!-- Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="brand">
+                <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="Логотип" class="brand-logo">
+                <div class="brand-name">Черноморский молокозавод</div>
+                <div class="brand-sub">Система управления задачами</div>
             </div>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Логин организации</label>
-                    <input type="text" id="login-org" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Введите логин" required>
+
+            <div class="error-msg" id="errorMsg">Неверный логин или пароль</div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Логин организации</label>
+                    <input type="text" id="username" required autocomplete="username">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-                    <input type="password" id="login-pass" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Введите пароль" required>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="password" required autocomplete="current-password">
                 </div>
-                <div id="login-error" class="text-red-600 text-sm hidden">Неверный логин или пароль</div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition shadow-sm">Войти в систему</button>
+                <button type="submit" class="btn btn-primary">Войти в систему</button>
             </form>
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                <p class="text-xs font-semibold text-blue-800 mb-1">Подсказка:</p>
-                <p class="text-xs text-blue-700">rarus/rarus2024, gradient/grad2024, kutuzovtsy/kut2024, admin/superadmin</p>
+
+            <div class="hint">
+                <strong>Подсказка:</strong><br>
+                rarus/rarus2024, gradient/grad2024, kutuzovtsy/kut2024,<br>
+                crimea/crimea2024, czpt/czpt2024, admin/superadmin
             </div>
         </div>
     </div>
 
-    <!-- App Screen -->
-    <div id="app-screen" class="hidden min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <div class="flex items-center space-x-4">
-                        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8">
-                            <rect width="32" height="32" rx="6" fill="#2563EB"/>
-                            <path d="M9 16L14 21L23 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span class="font-semibold text-gray-900">Управление задачами</span>
-                        <span id="sync-status" class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium flex items-center">
-                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span>Онлайн
-                        </span>
+    <!-- Main App -->
+    <div class="app-screen" id="appScreen">
+        <div class="container">
+            <div class="header">
+                <div class="header-top">
+                    <div class="header-brand">
+                        <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="Логотип" class="header-logo">
+                        <div class="header-brand-text">
+                            <h1>Черноморский молокозавод</h1>
+                            <div class="brand-sub">Система управления задачами</div>
+                        </div>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm text-gray-600">Вы вошли как: <span id="current-user-display" class="font-medium text-gray-900"></span></span>
-                        <button onclick="app.logout()" class="text-sm text-red-600 hover:text-red-800 font-medium transition">Выйти</button>
+                    <div class="user-info">
+                        <span>Пользователь: <strong id="currentUser"></strong></span>
+                        <button class="btn btn-secondary" onclick="showInstruction()">Инструкция</button>
+                        <button class="btn btn-logout" onclick="logout()">Выйти</button>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <select class="filter-select" id="orgFilter" onchange="filterTasks()">
+                        <option value="">Все организации</option>
+                        <option value="РАРУС">РАРУС</option>
+                        <option value="Градиент">Градиент</option>
+                        <option value="Кутузовцы">Кутузовцы</option>
+                        <option value="Черноморский молокозавод">Черноморский молокозавод</option>
+                        <option value="ЧЗПТ">ЧЗПТ</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter" onchange="filterTasks()">
+                        <option value="">Все статусы</option>
+                        <option value="К выполнению">К выполнению</option>
+                        <option value="В работе">В работе</option>
+                        <option value="На ревью">На ревью</option>
+                        <option value="Утверждено">Утверждено</option>
+                        <option value="Заблокировано">Заблокировано</option>
+                        <option value="Завершено">Завершено</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-success" onclick="openTaskModal()">+ Новая задача</button>
+                <button class="btn btn-action" onclick="syncPush()">Синхронизация (Push)</button>
+                <button class="btn btn-action" onclick="syncPull()">Загрузить из облака (Pull)</button>
+                <button class="btn btn-action" onclick="exportJSON()">Экспорт JSON</button>
+                <button class="btn btn-action" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+            </div>
+
+            <div class="github-config">
+                <h3>Настройки GitHub</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Путь репозитория (owner/repo)</label>
+                        <input type="text" id="githubRepo" value="Labenskij/sdlc" placeholder="owner/repo">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token</label>
+                        <input type="password" id="githubToken" placeholder="ghp_...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Целевой файл синхронизации (фиксирован)</label>
+                    <input type="text" id="githubFile" value="tasks.json" readonly>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Статус</th>
+                            <th>Приоритет</th>
+                            <th>Название задачи</th>
+                            <th>Организация</th>
+                            <th>Ответственный</th>
+                            <th>Часы / Стоимость</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instruction -->
+    <div class="instruction-page" id="instructionPage">
+        <div class="container">
+            <div class="instruction-header">
+                <button class="btn btn-back" onclick="hideInstruction()">← Назад</button>
+                <div class="header-brand">
+                    <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="Логотип" class="header-logo">
+                    <div class="header-brand-text">
+                        <h1 style="font-size:18px; color:var(--primary-dark);">Черноморский молокозавод</h1>
+                        <div class="brand-sub">Регламент работы с системой</div>
                     </div>
                 </div>
             </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-            <!-- Toolbar -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <select id="filter-org" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="all">Все организации</option>
+            <div class="instruction-body">
+                <h2>Инструкция и регламент работы с системой</h2>
+
+                <h3>1. Общие положения</h3>
+                <p>Система управления задачами предприятия «Черноморский молокозавод» предназначена для организации, отслеживания и контроля выполнения задач в рамках нескольких организаций. Система поддерживает синхронизацию с GitHub для резервного копирования и совместной работы.</p>
+
+                <h3>2. Авторизация в системе</h3>
+                <ul>
+                    <li>Для входа используйте учетные данные вашей организации</li>
+                    <li>Доступные организации: РАРУС, Градиент, Кутузовцы, Черноморский молокозавод, ЧЗПТ</li>
+                    <li>Администратор имеет доступ ко всем организациям</li>
+                </ul>
+
+                <h3>3. Создание задачи</h3>
+                <ul>
+                    <li>Нажмите кнопку «Новая задача»</li>
+                    <li>Заполните обязательные поля: Название, Организация, Ответственный</li>
+                    <li>Укажите приоритет, статус, плановые часы и ставку</li>
+                    <li>Нажмите «Сохранить задачу»</li>
+                </ul>
+
+                <h3>4. Статусы задач</h3>
+                <ul>
+                    <li><strong>К выполнению</strong> — задача поставлена, ожидает начала работы</li>
+                    <li><strong>В работе</strong> — задача выполняется</li>
+                    <li><strong>На ревью</strong> — задача готова, ожидает проверки</li>
+                    <li><strong>Утверждено</strong> — задача проверена и одобрена</li>
+                    <li><strong>Заблокировано</strong> — выполнение задачи приостановлено</li>
+                    <li><strong>Завершено</strong> — задача полностью выполнена</li>
+                </ul>
+
+                <h3>5. Приоритеты задач</h3>
+                <ul>
+                    <li><strong>Высокий</strong> — критически важная задача, требует немедленного выполнения</li>
+                    <li><strong>Средний</strong> — стандартная задача с обычными сроками</li>
+                    <li><strong>Низкий</strong> — задача может быть выполнена в свободное время</li>
+                </ul>
+
+                <h3>6. Синхронизация с GitHub</h3>
+                <p>Синхронизация выполняется с репозиторием <code>Labenskij/sdlc</code>, файл <code>tasks.json</code>.</p>
+                <ul>
+                    <li>Введите GitHub Personal Access Token с правами <code>repo</code></li>
+                    <li>Целевой файл синхронизации фиксирован — <code>tasks.json</code></li>
+                    <li>Используйте «Синхронизация (Push)» для отправки данных в GitHub</li>
+                    <li>Используйте «Загрузить из облака (Pull)» для получения данных из GitHub</li>
+                    <li>При Push система автоматически определяет SHA файла для корректного обновления</li>
+                </ul>
+
+                <h3>7. Экспорт и импорт данных</h3>
+                <ul>
+                    <li><strong>Экспорт JSON</strong> — сохраняет все задачи в JSON файл</li>
+                    <li><strong>Загрузить JSON</strong> — импортирует задачи из JSON файла</li>
+                    <li>Формат файла совместим с GitHub синхронизацией</li>
+                    <li>Система автоматически нормализует ключи и значения при импорте (удаляет лишние пробелы)</li>
+                </ul>
+
+                <h3>8. Расчет стоимости</h3>
+                <p>Стоимость задачи рассчитывается автоматически:</p>
+                <ul>
+                    <li>Плановая стоимость = Плановые часы × Ставка часа</li>
+                    <li>Фактическая стоимость = Фактические часы × Ставка часа</li>
+                </ul>
+
+                <h3>9. Фильтрация задач</h3>
+                <ul>
+                    <li>Используйте фильтры для отображения задач по организации</li>
+                    <li>Фильтруйте задачи по статусу для быстрого доступа</li>
+                    <li>Фильтры можно комбинировать</li>
+                </ul>
+
+                <h3>10. Редактирование и удаление</h3>
+                <ul>
+                    <li>Нажмите «Редактировать» для изменения задачи</li>
+                    <li>Нажмите «Удалить» для удаления задачи (требуется подтверждение)</li>
+                    <li>Все изменения сохраняются автоматически в локальном хранилище</li>
+                </ul>
+
+                <h3>11. Рекомендации по работе</h3>
+                <ul>
+                    <li>Регулярно синхронизируйте данные с GitHub для резервного копирования</li>
+                    <li>Обновляйте статус задач по мере выполнения</li>
+                    <li>Указывайте фактические часы для контроля затрат</li>
+                    <li>Используйте приоритеты для планирования работы</li>
+                    <li>Проводите ревью задач перед утверждением</li>
+                </ul>
+
+                <h3>12. Технические требования</h3>
+                <ul>
+                    <li>Современный веб-браузер (Chrome, Firefox, Safari, Edge)</li>
+                    <li>Стабильное интернет-соединение для синхронизации</li>
+                    <li>Доступ к GitHub API для облачной синхронизации</li>
+                </ul>
+
+                <h3>13. Поддержка</h3>
+                <p>При возникновении вопросов или проблем обращайтесь к администратору системы предприятия «Черноморский молокозавод».</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Новая задача</h2>
+                <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label>Название задачи *</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Организация</label>
+                        <select id="taskOrg" class="filter-select" style="width:100%">
                             <option value="РАРУС">РАРУС</option>
                             <option value="Градиент">Градиент</option>
                             <option value="Кутузовцы">Кутузовцы</option>
+                            <option value="Черноморский молокозавод">Черноморский молокозавод</option>
+                            <option value="ЧЗПТ">ЧЗПТ</option>
                         </select>
-                        <select id="filter-status" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="all">Все статусы</option>
+                    </div>
+                    <div class="form-group">
+                        <label>Отдел</label>
+                        <select id="taskDepartment" class="filter-select" style="width:100%">
+                            <option value="ИТ">ИТ</option>
+                            <option value="ЧЗПТ">ЧЗПТ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Приоритет</label>
+                        <select id="taskPriority" class="filter-select" style="width:100%">
+                            <option value="Низкий">Низкий</option>
+                            <option value="Средний">Средний</option>
+                            <option value="Высокий">Высокий</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ответственный</label>
+                        <input type="text" id="taskAssignee">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Статус</label>
+                        <select id="taskStatus" class="filter-select" style="width:100%">
                             <option value="К выполнению">К выполнению</option>
                             <option value="В работе">В работе</option>
                             <option value="На ревью">На ревью</option>
@@ -98,717 +951,526 @@
                             <option value="Завершено">Завершено</option>
                         </select>
                     </div>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <button onclick="app.openModal('modal-new-task')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition flex items-center shadow-sm">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            Новая задача
-                        </button>
-                        <div class="h-6 w-px bg-gray-300 mx-1 hidden sm:block"></div>
-                        <button onclick="app.confirmCloudSync()" class="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-sm font-medium hover:bg-indigo-100 transition flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            Синхронизация (Push)
-                        </button>
-                        <button onclick="app.pullFromCloud()" class="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-sm font-medium hover:bg-emerald-100 transition flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                            Загрузить из облака (Pull)
-                        </button>
-                        <button onclick="app.confirmSaveJson()" class="px-4 py-2 bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Экспорт JSON
-                        </button>
-                        <button onclick="app.loadJsonFromDisk()" class="px-4 py-2 bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
-                            Загрузить JSON
-                        </button>
+                    <div class="form-group">
+                        <label>Прогресс (%)</label>
+                        <input type="number" id="taskProgress" min="0" max="100" value="0">
                     </div>
                 </div>
-                
-                <!-- Cloud Sync Configuration -->
-                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Путь репозитория (GitHub)</label>
-                                <input type="text" id="cloud-path" value="Labenskij/sdlc" class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="owner/repo">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">GitHub Personal Access Token</label>
-                                <input type="password" id="github-token" class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="Введите токен вручную...">
-                            </div>
-                        </div>
-                        <div class="hidden md:flex items-center h-full">
-                            <span class="text-xs text-gray-500 whitespace-nowrap">Оставьте пустым для демо-режима</span>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Плановые часы</label>
+                        <input type="number" id="taskPlannedHours" min="0" step="0.5" value="0">
                     </div>
-                    <div class="mt-3 flex items-center gap-2 text-xs text-gray-600 border-t border-gray-200 pt-2">
-                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <span>Целевой файл синхронизации: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-gray-200">tasks.json</code></span>
+                    <div class="form-group">
+                        <label>Фактические часы</label>
+                        <input type="number" id="taskActualHours" min="0" step="0.5" value="0">
                     </div>
                 </div>
-            </div>
-
-            <!-- Table -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-4">Статус</th>
-                                <th class="px-6 py-4">Приоритет</th>
-                                <th class="px-6 py-4">Название задачи</th>
-                                <th class="px-6 py-4">Организация</th>
-                                <th class="px-6 py-4">Ответственный</th>
-                                <th class="px-6 py-4 text-right">Часы / Стоимость</th>
-                                <th class="px-6 py-4 text-center">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="task-table-body" class="divide-y divide-gray-100">
-                            <!-- Tasks will be rendered here -->
-                        </tbody>
-                    </table>
+                <div class="form-group">
+                    <label>Ставка часа (₽)</label>
+                    <input type="number" id="taskHourlyRate" min="0" step="100" value="0">
                 </div>
-                <div id="empty-state" class="hidden p-12 text-center text-gray-500">
-                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <p>Задачи не найдены.</p>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal: New Task -->
-    <div id="modal-new-task" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
-        <div class="absolute inset-0 modal-backdrop" onclick="app.closeModal('modal-new-task')"></div>
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-50 fade-in">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-900">Новая задача</h3>
-                <button onclick="app.closeModal('modal-new-task')" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <form id="form-new-task" class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Название задачи *</label>
-                    <input type="text" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
-                    <textarea name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Организация</label>
-                        <select name="org" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="РАРУС">РАРУС</option>
-                            <option value="Градиент">Градиент</option>
-                            <option value="Кутузовцы">Кутузовцы</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Отдел</label>
-                        <select name="department" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="ИТ">ИТ</option>
-                            <option value="ЧЗПТ">ЧЗПТ</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Приоритет</label>
-                        <select name="priority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Низкий">Низкий</option>
-                            <option value="Средний" selected>Средний</option>
-                            <option value="Высокий">Высокий</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ответственный</label>
-                        <input type="text" name="assignee" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Статус</label>
-                        <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="К выполнению" selected>К выполнению</option>
-                            <option value="В работе">В работе</option>
-                            <option value="Завершено">Завершено</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Прогресс (%)</label>
-                        <input type="number" name="progress" min="0" max="100" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Плановые часы</label>
-                        <input type="number" name="plannedHours" step="0.5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Фактические часы</label>
-                        <input type="number" name="actualHours" step="0.5" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ставка часа (₽)</label>
-                        <input type="number" name="hourlyRate" value="2500" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                </div>
-                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-100">
-                    <button type="button" onclick="app.closeModal('modal-new-task')" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Отмена</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">Сохранить задачу</button>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeTaskModal()">Отмена</button>
+                    <button type="submit" class="btn btn-save">Сохранить задачу</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Task Details -->
-    <div id="modal-task-details" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
-        <div class="absolute inset-0 modal-backdrop" onclick="app.closeModal('modal-task-details')"></div>
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-50 fade-in">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-900">Задача</h3>
-                <button onclick="app.closeModal('modal-task-details')" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+    <!-- Confirm Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2>Подтверждение действия</h2>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
             </div>
-            <div id="task-details-content" class="p-6 space-y-4">
-                <!-- Content injected via JS -->
-            </div>
-            <div class="p-6 border-t border-gray-100 flex justify-between items-center bg-gray-50 rounded-b-xl">
-                <button onclick="app.showJsonTemplate()" class="text-sm text-blue-600 hover:text-blue-800 font-medium">JSON Шаблон данных</button>
-                <div class="space-x-3">
-                    <button onclick="app.closeModal('modal-task-details')" class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">Закрыть</button>
-                    <button onclick="app.confirmSaveJson()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">Сохранить в JSON файл</button>
-                </div>
+            <p id="confirmMessage">Вы уверены, что хотите выполнить это действие?</p>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeConfirmModal()">Отмена</button>
+                <button class="btn btn-delete" id="confirmBtn" onclick="confirmAction()">Подтвердить</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: JSON Template -->
-    <div id="modal-json-template" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 modal-backdrop" onclick="app.closeModal('modal-json-template')"></div>
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg relative z-50 fade-in">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-900">JSON Шаблон данных</h3>
-                <button onclick="app.closeModal('modal-json-template')" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="p-6">
-                <p class="text-sm text-gray-600 mb-3">Скопируйте этот JSON для сохранения в файл или импорта:</p>
-                <pre id="json-template-content" class="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto font-mono"></pre>
-            </div>
-            <div class="p-6 border-t border-gray-100 flex justify-end space-x-3">
-                <button onclick="app.closeModal('modal-json-template')" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Закрыть</button>
-                <button onclick="app.copyJsonToClipboard()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">Копировать</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Confirmation -->
-    <div id="modal-confirm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 modal-backdrop"></div>
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm relative z-50 fade-in p-6">
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </div>
-                <h3 id="confirm-title" class="text-lg font-bold text-gray-900">Подтверждение действия</h3>
-            </div>
-            <p id="confirm-message" class="text-gray-600 mb-6 text-sm leading-relaxed">Вы уверены, что хотите выполнить это действие?</p>
-            <div class="flex justify-end space-x-3">
-                <button id="confirm-cancel-btn" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-medium">Отмена</button>
-                <button id="confirm-ok-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm font-medium">Подтвердить</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        const app = {
-            state: {
-                currentUser: null,
-                tasks: [],
-                currentFilter: { org: 'all', status: 'all' },
-                confirmCallback: null,
-                defaultBranch: null,
-                isSyncing: false
-            },
-
-            init() {
-                document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
-                document.getElementById('form-new-task').addEventListener('submit', (e) => this.handleNewTask(e));
-                document.getElementById('filter-org').addEventListener('change', (e) => {
-                    this.state.currentFilter.org = e.target.value;
-                    this.renderTasks();
-                });
-                document.getElementById('filter-status').addEventListener('change', (e) => {
-                    this.state.currentFilter.status = e.target.value;
-                    this.renderTasks();
-                });
-                
-                document.getElementById('confirm-cancel-btn').addEventListener('click', () => this.closeModal('modal-confirm'));
-                document.getElementById('confirm-ok-btn').addEventListener('click', () => {
-                    this.closeModal('modal-confirm');
-                    if (this.state.confirmCallback) {
-                        this.state.confirmCallback();
-                        this.state.confirmCallback = null;
-                    }
-                });
-            },
-
-            handleLogin(e) {
-                e.preventDefault();
-                const org = document.getElementById('login-org').value.trim();
-                const pass = document.getElementById('login-pass').value.trim();
-                const validCredentials = {
-                    'rarus': 'rarus2024',
-                    'gradient': 'grad2024',
-                    'kutuzovtsy': 'kut2024',
-                    'admin': 'superadmin'
-                };
-
-                if (validCredentials[org.toLowerCase()] === pass) {
-                    this.state.currentUser = org;
-                    document.getElementById('current-user-display').textContent = org;
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('app-screen').classList.remove('hidden');
-                    document.getElementById('login-error').classList.add('hidden');
-                    this.renderTasks();
-                    this.showToast('Успешный вход в систему', 'success');
-                    
-                    // Auto-pull from cloud on login if token is present
-                    const token = document.getElementById('github-token').value.trim();
-                    if (token) {
-                        setTimeout(() => this.pullFromCloud(true), 500);
-                    }
-                } else {
-                    document.getElementById('login-error').classList.remove('hidden');
-                }
-            },
-
-            logout() {
-                this.state.currentUser = null;
-                this.state.tasks = [];
-                document.getElementById('app-screen').classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('login-org').value = '';
-                document.getElementById('login-pass').value = '';
-            },
-
-            showConfirmation(title, message, callback) {
-                document.getElementById('confirm-title').textContent = title;
-                document.getElementById('confirm-message').textContent = message;
-                this.state.confirmCallback = callback;
-                document.getElementById('modal-confirm').classList.remove('hidden');
-            },
-
-            setSyncStatus(status, text) {
-                const badge = document.getElementById('sync-status');
-                const configs = {
-                    online: { bg: 'bg-green-100', text: 'text-green-700', dot: 'bg-green-500', label: text || 'Онлайн' },
-                    syncing: { bg: 'bg-yellow-100', text: 'text-yellow-700', dot: 'bg-yellow-500 spinner', label: text || 'Синхронизация...' },
-                    offline: { bg: 'bg-gray-100', text: 'text-gray-700', dot: 'bg-gray-500', label: text || 'Демо-режим' },
-                    error: { bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500', label: text || 'Ошибка' }
-                };
-                const c = configs[status] || configs.online;
-                badge.className = `px-2 py-0.5 rounded-full ${c.bg} ${c.text} text-xs font-medium flex items-center`;
-                badge.innerHTML = `<span class="w-1.5 h-1.5 ${c.dot} rounded-full mr-1.5"></span>${c.label}`;
-            },
-
-            confirmCloudSync() {
-                this.showConfirmation(
-                    'Синхронизация с облаком (Push)',
-                    'Локальные задачи будут закоммичены и запушены в файл tasks.json репозитория GitHub. Убедитесь, что у токена есть scope: repo.',
-                    () => this.executeCloudSync()
-                );
-            },
-
-            async getDefaultBranch(path, token) {
-                const res = await fetch(`https://api.github.com/repos/${path}`, {
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    throw new Error(`Не удалось получить репозиторий: ${err.message || res.status}`);
-                }
-                const data = await res.json();
-                return data.default_branch || 'main';
-            },
-
-            async executeCloudSync() {
-                const path = document.getElementById('cloud-path').value.trim() || 'Labenskij/sdlc';
-                const token = document.getElementById('github-token').value.trim();
-                
-                if (!token) {
-                    this.setSyncStatus('offline', 'Демо-режим');
-                    this.showToast('Демо-режим: синхронизация эмулирована', 'info');
-                    console.log(`[DEMO] Push simulated to https://github.com/${path}/tasks.json`);
-                    return;
-                }
-
-                if (this.state.isSyncing) {
-                    this.showToast('Синхронизация уже выполняется...', 'info');
-                    return;
-                }
-                this.state.isSyncing = true;
-                this.setSyncStatus('syncing', 'Push...');
-
-                try {
-                    if (!this.state.defaultBranch) {
-                        this.state.defaultBranch = await this.getDefaultBranch(path, token);
-                        console.log('Default branch:', this.state.defaultBranch);
-                    }
-
-                    const jsonData = JSON.stringify({
-                        tasks: this.state.tasks,
-                        exportDate: new Date().toISOString(),
-                        organization: this.state.currentUser
-                    }, null, 2);
-                    
-                    const base64Content = btoa(unescape(encodeURIComponent(jsonData)));
-                    const filePath = 'tasks.json';
-                    
-                    const getFileRes = await fetch(`https://api.github.com/repos/${path}/contents/${filePath}?ref=${this.state.defaultBranch}`, {
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    
-                    let sha = null;
-                    if (getFileRes.ok) {
-                        const fileData = await getFileRes.json();
-                        sha = fileData.sha;
-                    } else if (getFileRes.status !== 404) {
-                        const errText = await getFileRes.text();
-                        throw new Error(`Ошибка чтения файла: ${getFileRes.status}`);
-                    }
-
-                    const pushPayload = {
-                        message: `chore: sync tasks.json via SDLC Manager (${new Date().toISOString()})`,
-                        content: base64Content,
-                        branch: this.state.defaultBranch
-                    };
-                    
-                    if (sha) pushPayload.sha = sha;
-
-                    const pushRes = await fetch(`https://api.github.com/repos/${path}/contents/${filePath}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(pushPayload)
-                    });
-
-                    if (pushRes.ok) {
-                        const result = await pushRes.json();
-                        this.setSyncStatus('online', `Синхронизировано`);
-                        this.showToast('✅ Задачи отправлены в tasks.json', 'success');
-                        console.log('Commit:', result.commit.html_url);
-                    } else {
-                        const err = await pushRes.json().catch(() => ({}));
-                        throw new Error(err.message || `Ошибка пуша: ${pushRes.status}`);
-                    }
-                } catch (error) {
-                    console.error('Cloud Sync Error:', error);
-                    this.setSyncStatus('error', 'Ошибка push');
-                    this.showToast(`Ошибка: ${error.message}`, 'error');
-                } finally {
-                    this.state.isSyncing = false;
-                }
-            },
-
-            async pullFromCloud(silent = false) {
-                const path = document.getElementById('cloud-path').value.trim() || 'Labenskij/sdlc';
-                const token = document.getElementById('github-token').value.trim();
-                
-                if (!token) {
-                    if (!silent) {
-                        this.setSyncStatus('offline', 'Демо-режим');
-                        this.showToast('Укажите токен для загрузки из облака', 'info');
-                    }
-                    return;
-                }
-
-                if (this.state.isSyncing) {
-                    this.showToast('Синхронизация уже выполняется...', 'info');
-                    return;
-                }
-                this.state.isSyncing = true;
-                this.setSyncStatus('syncing', 'Pull...');
-
-                try {
-                    if (!this.state.defaultBranch) {
-                        this.state.defaultBranch = await this.getDefaultBranch(path, token);
-                    }
-
-                    const filePath = 'tasks.json';
-                    const res = await fetch(`https://api.github.com/repos/${path}/contents/${filePath}?ref=${this.state.defaultBranch}`, {
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-
-                    if (res.status === 404) {
-                        this.setSyncStatus('online', 'Облако пусто');
-                        this.showToast('Файл tasks.json ещё не существует в репозитории', 'info');
-                        return;
-                    }
-
-                    if (!res.ok) {
-                        const err = await res.json().catch(() => ({}));
-                        throw new Error(err.message || `Ошибка: ${res.status}`);
-                    }
-
-                    const fileData = await res.json();
-                    const decoded = decodeURIComponent(escape(atob(fileData.content)));
-                    const parsed = JSON.parse(decoded);
-
-                    if (Array.isArray(parsed)) {
-                        this.state.tasks = parsed;
-                    } else if (parsed.tasks && Array.isArray(parsed.tasks)) {
-                        this.state.tasks = parsed.tasks;
-                    } else {
-                        throw new Error('Неверный формат tasks.json');
-                    }
-
-                    this.renderTasks();
-                    this.setSyncStatus('online', `Загружено: ${this.state.tasks.length}`);
-                    this.showToast(`✅ Загружено задач из облака: ${this.state.tasks.length}`, 'success');
-                    console.log('Pulled from tasks.json at', new Date(fileData.commit?.author?.date || Date.now()).toLocaleString());
-                } catch (error) {
-                    console.error('Pull Error:', error);
-                    this.setSyncStatus('error', 'Ошибка pull');
-                    if (!silent) {
-                        this.showToast(`Ошибка загрузки: ${error.message}`, 'error');
-                    }
-                } finally {
-                    this.state.isSyncing = false;
-                }
-            },
-
-            confirmSaveJson() {
-                this.showConfirmation(
-                    'Сохранение JSON файла',
-                    'Вы уверены, что хотите сохранить текущие данные задач в JSON файл на ваше устройство?',
-                    () => this.executeSaveJson()
-                );
-            },
-
-            executeSaveJson() {
-                try {
-                    const dataStr = JSON.stringify({
-                        tasks: this.state.tasks,
-                        exportDate: new Date().toISOString(),
-                        organization: this.state.currentUser
-                    }, null, 2);
-                    const blob = new Blob([dataStr], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `tasks.json`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    this.showToast('JSON файл успешно сохранен', 'success');
-                } catch (err) {
-                    this.showToast('Ошибка при сохранении файла', 'error');
-                }
-            },
-
-            handleNewTask(e) {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const newTask = {
-                    id: Date.now().toString(),
-                    title: formData.get('title'),
-                    description: formData.get('description'),
-                    org: formData.get('org'),
-                    department: formData.get('department'),
-                    priority: formData.get('priority'),
-                    assignee: formData.get('assignee'),
-                    status: formData.get('status'),
-                    progress: parseInt(formData.get('progress')) || 0,
-                    plannedHours: parseFloat(formData.get('plannedHours')) || 0,
-                    actualHours: parseFloat(formData.get('actualHours')) || 0,
-                    hourlyRate: parseFloat(formData.get('hourlyRate')) || 0,
-                    createdAt: new Date().toISOString()
-                };
-                
-                this.state.tasks.push(newTask);
-                this.closeModal('modal-new-task');
-                e.target.reset();
-                this.renderTasks();
-                this.showToast('Задача успешно создана', 'success');
-            },
-
-            renderTasks() {
-                const tbody = document.getElementById('task-table-body');
-                const emptyState = document.getElementById('empty-state');
-                tbody.innerHTML = '';
-
-                const filtered = this.state.tasks.filter(taskItem => {
-                    const orgMatch = this.state.currentFilter.org === 'all' || taskItem.org === this.state.currentFilter.org;
-                    const statusMatch = this.state.currentFilter.status === 'all' || taskItem.status === this.state.currentFilter.status;
-                    return orgMatch && statusMatch;
-                });
-
-                if (filtered.length === 0) {
-                    emptyState.classList.remove('hidden');
-                    return;
-                }
-                emptyState.classList.add('hidden');
-
-                filtered.forEach(taskItem => {
-                    const cost = (taskItem.actualHours * taskItem.hourlyRate).toLocaleString('ru-RU');
-                    const statusColors = {
-                        'К выполнению': 'bg-gray-100 text-gray-800',
-                        'В работе': 'bg-blue-100 text-blue-800',
-                        'На ревью': 'bg-yellow-100 text-yellow-800',
-                        'Утверждено': 'bg-purple-100 text-purple-800',
-                        'Заблокировано': 'bg-red-100 text-red-800',
-                        'Завершено': 'bg-green-100 text-green-800'
-                    };
-                    const priorityColors = {
-                        'Низкий': 'text-gray-600',
-                        'Средний': 'text-blue-600',
-                        'Высокий': 'text-red-600'
-                    };
-
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-gray-50 transition';
-                    tr.innerHTML = `
-                        <td class="px-6 py-4"><span class="px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[taskItem.status] || 'bg-gray-100'}">${taskItem.status}</span></td>
-                        <td class="px-6 py-4 font-medium ${priorityColors[taskItem.priority]}">${taskItem.priority}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900">${taskItem.title}</td>
-                        <td class="px-6 py-4 text-gray-600">${taskItem.org}</td>
-                        <td class="px-6 py-4 text-gray-600">${taskItem.assignee || 'Не назначен'}</td>
-                        <td class="px-6 py-4 text-right text-gray-600">${taskItem.actualHours}/${taskItem.plannedHours} ч<br><span class="text-xs text-gray-400">${cost} ₽</span></td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="app.viewTask('${taskItem.id}')" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Открыть</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            },
-
-            viewTask(taskId) {
-                const taskItem = this.state.tasks.find(t => t.id === taskId);
-                if (!taskItem) return;
-
-                const cost = (taskItem.actualHours * taskItem.hourlyRate).toLocaleString('ru-RU');
-                const content = document.getElementById('task-details-content');
-                content.innerHTML = `
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div><span class="text-gray-500">Организация:</span> <span class="font-medium">${taskItem.org}</span></div>
-                        <div><span class="text-gray-500">Отдел:</span> <span class="font-medium">${taskItem.department}</span></div>
-                        <div><span class="text-gray-500">Приоритет:</span> <span class="font-medium">${taskItem.priority}</span></div>
-                        <div><span class="text-gray-500">Ответственный:</span> <span class="font-medium">${taskItem.assignee || 'Не назначен'}</span></div>
-                        <div><span class="text-gray-500">Плановые часы:</span> <span class="font-medium">${taskItem.plannedHours}</span></div>
-                        <div><span class="text-gray-500">Фактические часы:</span> <span class="font-medium">${taskItem.actualHours}</span></div>
-                        <div><span class="text-gray-500">Ставка часа:</span> <span class="font-medium">${taskItem.hourlyRate} ₽</span></div>
-                        <div><span class="text-gray-500">Стоимость:</span> <span class="font-medium text-blue-600">${cost} ₽</span></div>
-                    </div>
-                    <div class="mt-4">
-                        <span class="text-gray-500 text-sm">Прогресс:</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${taskItem.progress}%"></div>
-                        </div>
-                        <span class="text-xs text-gray-500 mt-1 block">${taskItem.progress}%</span>
-                    </div>
-                    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-                        <span class="text-gray-500 text-sm block mb-1">Описание:</span>
-                        <p class="text-gray-800 text-sm whitespace-pre-wrap">${taskItem.description || 'Описание отсутствует'}</p>
-                    </div>
-                `;
-                this.openModal('modal-task-details');
-            },
-
-            showJsonTemplate() {
-                const template = {
-                    tasks: this.state.tasks,
-                    exportDate: new Date().toISOString(),
-                    organization: this.state.currentUser
-                };
-                document.getElementById('json-template-content').textContent = JSON.stringify(template, null, 2);
-                this.closeModal('modal-task-details');
-                this.openModal('modal-json-template');
-            },
-
-            copyJsonToClipboard() {
-                const text = document.getElementById('json-template-content').textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    this.showToast('JSON скопирован в буфер обмена', 'success');
-                    this.closeModal('modal-json-template');
-                }).catch(() => {
-                    this.showToast('Ошибка копирования', 'error');
-                });
-            },
-
-            loadJsonFromDisk() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        try {
-                            const data = JSON.parse(event.target.result);
-                            if (Array.isArray(data)) {
-                                this.state.tasks = data;
-                            } else if (data.tasks && Array.isArray(data.tasks)) {
-                                this.state.tasks = data.tasks;
-                            }
-                            this.renderTasks();
-                            this.showToast(`Загружено задач: ${this.state.tasks.length}`, 'success');
-                        } catch (err) {
-                            this.showToast('Ошибка чтения JSON файла', 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                };
-                input.click();
-            },
-
-            openModal(modalId) {
-                document.getElementById(modalId).classList.remove('hidden');
-            },
-
-            closeModal(modalId) {
-                document.getElementById(modalId).classList.add('hidden');
-            },
-
-            showToast(message, type = 'info') {
-                const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                const colors = {
-                    success: 'bg-green-600',
-                    error: 'bg-red-600',
-                    info: 'bg-gray-800'
-                };
-                toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium toast flex items-center`;
-                toast.innerHTML = `<span>${message}</span>`;
-                container.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateX(100%)';
-                    toast.style.transition = 'all 0.3s ease';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
+        const CREDENTIALS = {
+            'rarus': 'rarus2024',
+            'gradient': 'grad2024',
+            'kutuzovtsy': 'kut2024',
+            'crimea': 'crimea2024',
+            'czpt': 'czpt2024',
+            'admin': 'superadmin'
         };
 
-        document.addEventListener('DOMContentLoaded', () => app.init());
+        const ORG_LOGOS = {
+            'Черноморский молокозавод': 'https://crimeamilk.ru/images/logo/logo-new.svg',
+            'ЧЗПТ': 'https://crimeamilk.ru/images/logo/logo-new.svg'
+        };
+
+        const STATUS_CLASS = {
+            'К выполнению': 'status-todo',
+            'В работе': 'status-progress',
+            'На ревью': 'status-review',
+            'Утверждено': 'status-approved',
+            'Заблокировано': 'status-blocked',
+            'Завершено': 'status-done'
+        };
+
+        const PRIORITY_CLASS = {
+            'Высокий': 'priority-high',
+            'Средний': 'priority-medium',
+            'Низкий': 'priority-low'
+        };
+
+        const SYNC_FILE = 'tasks.json';
+
+        let tasks = [];
+        let currentUser = '';
+        let pendingAction = null;
+
+        // === Utility ===
+        function showToast(message, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Нормализация: удаляет пробелы в ключах И строковых значениях
+        // (решает проблему с битым JSON, где ключи/значения имеют лишние пробелы)
+        function normalizeValue(v) {
+            if (typeof v === 'string') return v.trim();
+            if (Array.isArray(v)) return v.map(normalizeValue);
+            if (v && typeof v === 'object') return normalizeObject(v);
+            return v;
+        }
+
+        function normalizeObject(obj) {
+            if (!obj || typeof obj !== 'object') return obj;
+            const result = {};
+            for (const key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    const cleanKey = key.trim();
+                    result[cleanKey] = normalizeValue(obj[key]);
+                }
+            }
+            return result;
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Корректное base64 декодирование UTF-8
+        function decodeBase64(b64) {
+            // GitHub API возвращает content с переносами строк — удаляем их
+            const clean = b64.replace(/\s/g, '');
+            const bin = atob(clean);
+            // Декодируем UTF-8 через Uint8Array
+            const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+
+        // Корректное base64 кодирование UTF-8
+        function encodeBase64(str) {
+            const bytes = new TextEncoder().encode(str);
+            let bin = '';
+            for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+            return btoa(bin);
+        }
+
+        // === Login ===
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+
+            if (CREDENTIALS[username] && CREDENTIALS[username] === password) {
+                currentUser = username === 'admin' ? 'Администратор' : username;
+                document.getElementById('currentUser').textContent = currentUser;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').classList.add('active');
+                loadTasks();
+            } else {
+                const err = document.getElementById('errorMsg');
+                err.classList.add('show');
+                setTimeout(() => err.classList.remove('show'), 3000);
+            }
+        });
+
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appScreen').classList.remove('active');
+            document.getElementById('instructionPage').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function showInstruction() {
+            document.getElementById('appScreen').classList.remove('active');
+            document.getElementById('instructionPage').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function hideInstruction() {
+            document.getElementById('instructionPage').classList.remove('active');
+            document.getElementById('appScreen').classList.add('active');
+        }
+
+        // === Tasks ===
+        function loadTasks() {
+            try {
+                const stored = localStorage.getItem('tasks');
+                tasks = stored ? JSON.parse(stored) : [];
+                if (!Array.isArray(tasks)) tasks = [];
+            } catch (e) {
+                tasks = [];
+            }
+            renderTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function filterTasks() { renderTasks(); }
+
+        function getFilteredTasks() {
+            const orgFilter = document.getElementById('orgFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            return tasks.filter(t =>
+                (!orgFilter || t.org === orgFilter) &&
+                (!statusFilter || t.status === statusFilter)
+            );
+        }
+
+        function renderTasks() {
+            const tbody = document.getElementById('tasksTable');
+            const filtered = getFilteredTasks();
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Задачи не найдены.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(task => {
+                const statusClass = STATUS_CLASS[task.status] || '';
+                const priorityClass = PRIORITY_CLASS[task.priority] || '';
+                const plannedCost = ((task.plannedHours || 0) * (task.hourlyRate || 0)).toLocaleString('ru-RU');
+                const actualCost = ((task.actualHours || 0) * (task.hourlyRate || 0)).toLocaleString('ru-RU');
+                const logo = ORG_LOGOS[task.org] ? `<img src="${ORG_LOGOS[task.org]}" class="org-logo" alt="">` : '';
+                const safeId = escapeHtml(task.id);
+
+                return `
+                    <tr>
+                        <td><span class="status-badge ${statusClass}">${escapeHtml(task.status)}</span></td>
+                        <td><span class="${priorityClass}">${escapeHtml(task.priority)}</span></td>
+                        <td>${escapeHtml(task.title)}</td>
+                        <td><div class="org-cell">${logo}<span>${escapeHtml(task.org)}</span></div></td>
+                        <td>${escapeHtml(task.assignee) || '-'}</td>
+                        <td>
+                            ${task.plannedHours || 0}ч / ${plannedCost}₽<br>
+                            <small style="color:var(--text-muted)">Факт: ${task.actualHours || 0}ч / ${actualCost}₽</small>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-edit" onclick="editTask('${safeId}')">Редактировать</button>
+                            <button class="btn btn-sm btn-delete" onclick="deleteTask('${safeId}')">Удалить</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // === Task Modal ===
+        function openTaskModal(task = null) {
+            document.getElementById('taskModal').classList.add('active');
+            document.getElementById('taskForm').reset();
+
+            if (task) {
+                document.getElementById('modalTitle').textContent = 'Редактировать задачу';
+                document.getElementById('taskId').value = task.id;
+                document.getElementById('taskTitle').value = task.title || '';
+                document.getElementById('taskDescription').value = task.description || '';
+                document.getElementById('taskOrg').value = task.org || 'РАРУС';
+                document.getElementById('taskDepartment').value = task.department || 'ИТ';
+                document.getElementById('taskPriority').value = task.priority || 'Средний';
+                document.getElementById('taskAssignee').value = task.assignee || '';
+                document.getElementById('taskStatus').value = task.status || 'К выполнению';
+                document.getElementById('taskProgress').value = task.progress || 0;
+                document.getElementById('taskPlannedHours').value = task.plannedHours || 0;
+                document.getElementById('taskActualHours').value = task.actualHours || 0;
+                document.getElementById('taskHourlyRate').value = task.hourlyRate || 0;
+            } else {
+                document.getElementById('modalTitle').textContent = 'Новая задача';
+                document.getElementById('taskId').value = '';
+            }
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.remove('active');
+        }
+
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('taskId').value;
+            const existing = id ? tasks.find(t => t.id === id) : null;
+
+            const taskData = {
+                id: id || Date.now().toString(),
+                title: document.getElementById('taskTitle').value.trim(),
+                description: document.getElementById('taskDescription').value.trim(),
+                org: document.getElementById('taskOrg').value,
+                department: document.getElementById('taskDepartment').value,
+                priority: document.getElementById('taskPriority').value,
+                assignee: document.getElementById('taskAssignee').value.trim(),
+                status: document.getElementById('taskStatus').value,
+                progress: parseInt(document.getElementById('taskProgress').value) || 0,
+                plannedHours: parseFloat(document.getElementById('taskPlannedHours').value) || 0,
+                actualHours: parseFloat(document.getElementById('taskActualHours').value) || 0,
+                hourlyRate: parseFloat(document.getElementById('taskHourlyRate').value) || 0,
+                createdAt: existing ? existing.createdAt : new Date().toISOString()
+            };
+
+            if (id) {
+                const index = tasks.findIndex(t => t.id === id);
+                if (index !== -1) tasks[index] = taskData;
+            } else {
+                tasks.push(taskData);
+            }
+
+            saveTasks();
+            renderTasks();
+            closeTaskModal();
+            showToast(id ? 'Задача обновлена' : 'Задача создана', 'success');
+        });
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) openTaskModal(task);
+        }
+
+        function deleteTask(id) {
+            pendingAction = () => {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderTasks();
+                showToast('Задача удалена', 'success');
+            };
+            document.getElementById('confirmMessage').textContent = 'Вы уверены, что хотите удалить задачу?';
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            pendingAction = null;
+        }
+
+        function confirmAction() {
+            if (pendingAction) pendingAction();
+            closeConfirmModal();
+        }
+
+        // === GitHub Sync ===
+        function getGithubConfig() {
+            const repo = document.getElementById('githubRepo').value.trim();
+            const token = document.getElementById('githubToken').value.trim();
+            return { repo, token };
+        }
+
+        async function syncPush() {
+            const { repo, token } = getGithubConfig();
+            if (!repo || !token) {
+                showToast('Укажите репозиторий и токен GitHub', 'error');
+                return;
+            }
+            if (!/^[^/]+\/[^/]+$/.test(repo)) {
+                showToast('Неверный формат репозитория. Используйте owner/repo', 'error');
+                return;
+            }
+
+            const url = `https://api.github.com/repos/${repo}/contents/${SYNC_FILE}`;
+
+            try {
+                const data = {
+                    tasks: tasks,
+                    exportDate: new Date().toISOString(),
+                    organization: currentUser
+                };
+                const content = encodeBase64(JSON.stringify(data, null, 2));
+
+                // Получаем SHA существующего файла (если есть)
+                let sha = null;
+                try {
+                    const getResp = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/vnd.github+json',
+                            'X-GitHub-Api-Version': '2022-11-28'
+                        }
+                    });
+                    if (getResp.ok) {
+                        const existing = await getResp.json();
+                        sha = existing.sha;
+                    } else if (getResp.status !== 404) {
+                        const err = await getResp.json().catch(() => ({}));
+                        throw new Error(err.message || `HTTP ${getResp.status}`);
+                    }
+                } catch (e) {
+                    if (e.message && !e.message.includes('Failed to fetch')) throw e;
+                }
+
+                const body = {
+                    message: `Update tasks (${currentUser}, ${new Date().toISOString()})`,
+                    content: content
+                };
+                if (sha) body.sha = sha;
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github+json',
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok || response.status === 201) {
+                    showToast('Данные отправлены в GitHub', 'success');
+                } else {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.message || `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                showToast('Ошибка Push: ' + error.message, 'error');
+            }
+        }
+
+        async function syncPull() {
+            const { repo, token } = getGithubConfig();
+            if (!repo || !token) {
+                showToast('Укажите репозиторий и токен GitHub', 'error');
+                return;
+            }
+            if (!/^[^/]+\/[^/]+$/.test(repo)) {
+                showToast('Неверный формат репозитория. Используйте owner/repo', 'error');
+                return;
+            }
+
+            const url = `https://api.github.com/repos/${repo}/contents/${SYNC_FILE}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github+json',
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Файл tasks.json не найден в репозитории. Сначала выполните Push.');
+                    }
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.message || `HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (!data.content) throw new Error('Пустой ответ от GitHub');
+
+                const decoded = decodeBase64(data.content);
+                const parsed = JSON.parse(decoded);
+                const normalized = normalizeObject(parsed);
+
+                if (!Array.isArray(normalized.tasks)) {
+                    throw new Error('Неверный формат: отсутствует массив tasks');
+                }
+
+                tasks = normalized.tasks;
+                saveTasks();
+                renderTasks();
+                showToast(`Загружено задач: ${tasks.length}`, 'success');
+            } catch (error) {
+                showToast('Ошибка Pull: ' + error.message, 'error');
+            }
+        }
+
+        // === Export/Import ===
+        function exportJSON() {
+            const data = {
+                tasks: tasks,
+                exportDate: new Date().toISOString(),
+                organization: currentUser
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = SYNC_FILE;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Файл экспортирован', 'success');
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const raw = JSON.parse(e.target.result);
+                    const normalized = normalizeObject(raw);
+                    if (!Array.isArray(normalized.tasks)) {
+                        throw new Error('Неверный формат: отсутствует массив tasks');
+                    }
+                    tasks = normalized.tasks;
+                    saveTasks();
+                    renderTasks();
+                    showToast(`Импортировано задач: ${tasks.length}`, 'success');
+                } catch (error) {
+                    showToast('Ошибка импорта: ' + error.message, 'error');
+                }
+            };
+            reader.onerror = () => showToast('Ошибка чтения файла', 'error');
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // === Init ===
+        loadTasks();
+
+        // Close modals on backdrop click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    if (modal.id === 'confirmModal') pendingAction = null;
+                }
+            });
+        });
+
+        // ESC to close modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+                pendingAction = null;
+            }
+        });
     </script>
 </body>
 </html>
+
