@@ -17,7 +17,16 @@
       "owner": "admin"
     }
   ],
-  "comments": {},
-  "exportDate": "2026-06-18T06:52:56.291Z",
-  "organization": "admin"
+  "comments": {
+    "1781765550539": [
+      {
+        "author": "РАРУС",
+        "login": "rarus",
+        "text": "dgdfgdf",
+        "date": "2026-06-18T06:59:20.513Z"
+      }
+    ]
+  },
+  "exportDate": "2026-06-18T06:59:30.162Z",
+  "organization": "rarus"
 }
