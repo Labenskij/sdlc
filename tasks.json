@@ -33,6 +33,16 @@
       "createdAt": "2026-06-17T13:15:50.847Z"
     }
   ],
-  "exportDate": "2026-06-17T13:17:17.254Z",
-  "organization": "admin"
+  "comments": {
+    "1781699382293": [
+      {
+        "author": "РАРУС",
+        "login": "rarus",
+        "text": "теыт",
+        "date": "2026-06-18T06:46:48.339Z"
+      }
+    ]
+  },
+  "exportDate": "2026-06-18T06:46:59.315Z",
+  "organization": "rarus"
 }
