@@ -1,6 +1,23 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "1781765385939",
+      "title": "Задача 2",
+      "assignee": "Витя",
+      "description": "Описание",
+      "org": "Кутузовцы",
+      "department": "Производство",
+      "priority": "Средний",
+      "status": "В работе",
+      "progress": 12,
+      "plannedHours": 3,
+      "actualHours": 4,
+      "hourlyRate": 1200,
+      "createdAt": "2026-06-18T06:49:45.939Z",
+      "owner": "admin"
+    }
+  ],
   "comments": {},
-  "exportDate": "2026-06-18T06:48:37.875Z",
+  "exportDate": "2026-06-18T06:50:27.123Z",
   "organization": "admin"
 }
