@@ -4,423 +4,239 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Черноморский молокозавод — Система управления задачами</title>
-<link rel="icon" href="https://crimeamilk.ru/images/logo/logo-new.svg" type="image/svg+xml">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f4f6fa;
-    color: #1f2937;
-    min-height: 100vh;
-  }
-  /* ===== LOGIN ===== */
-  .login-wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-    padding: 20px;
-  }
-  .login-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.25);
-  }
-  .login-logo { width: 80px; height: 80px; margin: 0 auto 16px; display: block; }
-  .login-title { text-align: center; font-size: 20px; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; }
-  .login-sub { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 24px; }
-  .login-error {
-    background: #fee2e2; color: #991b1b; padding: 10px 14px; border-radius: 8px;
-    font-size: 13px; margin-bottom: 14px; display: none;
-  }
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;
-    font-size: 14px; font-family: inherit; transition: border-color .15s;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15);
-  }
-  .btn {
-    padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px;
-    font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit;
-  }
-  .btn-primary { background: #1e3a8a; color: #fff; width: 100%; padding: 12px; }
-  .btn-primary:hover { background: #1e40af; }
-  .btn-success { background: #059669; color: #fff; }
-  .btn-success:hover { background: #047857; }
-  .btn-danger { background: #dc2626; color: #fff; }
-  .btn-danger:hover { background: #b91c1c; }
-  .btn-secondary { background: #e5e7eb; color: #374151; }
-  .btn-secondary:hover { background: #d1d5db; }
-  .btn-warning { background: #f59e0b; color: #fff; }
-  .btn-warning:hover { background: #d97706; }
-  .btn-info { background: #0ea5e9; color: #fff; }
-  .btn-info:hover { background: #0284c7; }
-  .btn:disabled { opacity: .5; cursor: not-allowed; }
-  .hint {
-    margin-top: 18px; padding: 12px; background: #eff6ff; border-radius: 8px;
-    font-size: 12px; color: #1e40af; line-height: 1.5;
-  }
-  /* ===== APP ===== */
-  .app { display: none; }
-  .app.active { display: block; }
-  .header {
-    background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
-  .header-left { display: flex; align-items: center; gap: 14px; }
-  .header-logo { width: 44px; height: 44px; }
-  .header-title { font-size: 16px; font-weight: 700; color: #1e3a8a; }
-  .header-sub { font-size: 12px; color: #6b7280; }
-  .header-right { display: flex; align-items: center; gap: 10px; }
-  .user-badge {
-    background: #eff6ff; color: #1e40af; padding: 6px 12px; border-radius: 20px;
-    font-size: 13px; font-weight: 600;
-  }
-  .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: center; }
-  .toolbar .btn { padding: 8px 14px; font-size: 13px; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f5f7fa;color:#1a202c;min-height:100vh}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px}
+.login-card{background:#fff;padding:40px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);width:100%;max-width:420px}
+.login-card .logo{text-align:center;margin-bottom:24px}
+.login-card .logo img{height:56px}
+.login-card h1{font-size:22px;text-align:center;margin-bottom:4px;color:#1a202c}
+.login-card .sub{font-size:13px;color:#718096;text-align:center;margin-bottom:20px}
+.login-card .err{background:#fed7d7;color:#c53030;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
+.login-card label{display:block;font-size:12px;font-weight:600;color:#4a5568;margin-bottom:6px}
+.login-card input{width:100%;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:14px;font-family:inherit}
+.login-card input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.15)}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+.btn-primary:hover{opacity:.9}
+.hint{margin-top:18px;padding:14px;background:#f7fafc;border-radius:8px;font-size:11px;color:#4a5568;line-height:1.7}
+.hint b{color:#2d3748}
 
-  /* ===== ФИЛЬТРЫ — ГОРИЗОНТАЛЬНО ===== */
-  .filters {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: nowrap;
-  }
-  .filters-label {
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 600;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .filters-chips {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-  .chip {
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all .15s;
-    font-weight: 500;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .chip:hover { background: #f3f4f6; }
-  .chip.active { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
+.app{display:none}
+.header{background:#fff;padding:14px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header .brand{display:flex;align-items:center;gap:12px}
+.header .brand img{height:40px}
+.header .brand h2{font-size:16px}
+.header .brand .sub{font-size:12px;color:#718096}
+.header .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{padding:8px 14px;border:1px solid #e2e8f0;background:#fff;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn:hover{background:#f7fafc;border-color:#cbd5e0}
+.btn-blue{background:#3182ce;color:#fff;border-color:#3182ce}
+.btn-blue:hover{background:#2c5282}
+.btn-green{background:#38a169;color:#fff;border-color:#38a169}
+.btn-green:hover{background:#2f855a}
+.btn-purple{background:#805ad5;color:#fff;border-color:#805ad5}
+.btn-purple:hover{background:#6b46c1}
+.btn-orange{background:#dd6b20;color:#fff;border-color:#dd6b20}
+.btn-orange:hover{background:#c05621}
+.btn-red{background:#e53e3e;color:#fff;border-color:#e53e3e}
+.btn-red:hover{background:#c53030}
+.btn-sm{padding:5px 10px;font-size:12px}
 
-  .chart-card {
-    background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
-  .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: #1f2937; }
-  .chart-bars { display: flex; flex-direction: column; gap: 10px; }
-  .chart-row { display: flex; align-items: center; gap: 12px; }
-  .chart-label { width: 130px; font-size: 13px; color: #4b5563; }
-  .chart-bar-bg {
-    flex: 1; background: #f3f4f6; border-radius: 6px; height: 24px;
-    overflow: hidden; position: relative;
-  }
-  .chart-bar {
-    height: 100%; border-radius: 6px; transition: width .4s;
-    display: flex; align-items: center; padding-left: 8px;
-    color: #fff; font-size: 12px; font-weight: 600;
-  }
-  .table-card {
-    background: #fff; border-radius: 12px; overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead { background: #f9fafb; }
-  th {
-    text-align: left; padding: 12px 14px; font-weight: 600; color: #374151;
-    border-bottom: 1px solid #e5e7eb; white-space: nowrap;
-  }
-  td { padding: 12px 14px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
-  tbody tr:hover { background: #f9fafb; }
-  .badge {
-    display: inline-block; padding: 3px 10px; border-radius: 12px;
-    font-size: 11px; font-weight: 600; white-space: nowrap;
-  }
-  .badge-status-К\ выполнению { background: #dbeafe; color: #1e40af; }
-  .badge-status-В\ работе { background: #fef3c7; color: #92400e; }
-  .badge-status-На\ ревью { background: #e0e7ff; color: #3730a3; }
-  .badge-status-Утверждено { background: #d1fae5; color: #065f46; }
-  .badge-status-Заблокировано { background: #fee2e2; color: #991b1b; }
-  .badge-status-Завершено { background: #e5e7eb; color: #374151; }
-  .badge-priority-Высокий { background: #fee2e2; color: #991b1b; }
-  .badge-priority-Средний { background: #fef3c7; color: #92400e; }
-  .badge-priority-Низкий { background: #e5e7eb; color: #374151; }
-  .progress-bar {
-    width: 100px; height: 6px; background: #f3f4f6; border-radius: 3px;
-    overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px;
-  }
-  .progress-fill {
-    height: 100%; background: linear-gradient(90deg, #3b82f6, #1e3a8a);
-    transition: width .3s;
-  }
-  .action-btn { padding: 5px 9px; font-size: 12px; margin-right: 4px; border-radius: 6px; }
-  .empty { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
-  .pagination {
-    display: flex; justify-content: center; align-items: center;
-    gap: 8px; padding: 14px;
-  }
-  /* ===== MODAL ===== */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.5);
-    display: none; align-items: center; justify-content: center;
-    z-index: 100; padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: #fff; border-radius: 12px; width: 100%; max-width: 600px;
-    max-height: 90vh; overflow-y: auto; padding: 24px;
-  }
-  .modal-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;
-  }
-  .modal-title { font-size: 18px; font-weight: 700; color: #1e3a8a; }
-  .modal-close {
-    background: none; border: none; font-size: 22px; cursor: pointer;
-    color: #6b7280; padding: 4px 10px;
-  }
-  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .sync-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; background: #1f2937; color: #fff;
-    padding: 12px 20px; border-radius: 8px; font-size: 14px; z-index: 200;
-    opacity: 0; transform: translateY(20px); transition: all .3s;
-    max-width: 360px;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.success { background: #059669; }
-  .toast.error { background: #dc2626; }
-  .desc-preview {
-    max-width: 300px; overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap; cursor: pointer;
-  }
-  .desc-preview:hover { color: #1e40af; text-decoration: underline; }
-  .readonly-notice {
-    background: #fef3c7; color: #92400e; padding: 10px 14px; border-radius: 8px;
-    font-size: 13px; margin-bottom: 14px; border-left: 4px solid #f59e0b;
-  }
-  @media (max-width: 768px) {
-    .form-row, .sync-grid { grid-template-columns: 1fr; }
-    .header { padding: 10px 14px; flex-wrap: wrap; gap: 10px; }
-    .container { padding: 14px; }
-    .filters { flex-wrap: wrap; }
-  }
+.readonly-banner{background:#fef3c7;color:#744210;padding:10px 24px;font-size:13px;display:none}
+
+.container{padding:20px 24px;max-width:1400px;margin:0 auto}
+.filters{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.filters select,.filters input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;background:#fff;font-family:inherit}
+
+.chart-section{background:#fff;border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.chart-section h3{font-size:15px;margin-bottom:14px}
+.chart-bars{display:flex;gap:14px;flex-wrap:wrap}
+.chart-bar{flex:1;min-width:140px}
+.chart-bar .label{font-size:12px;color:#718096;margin-bottom:6px}
+.chart-bar .track{height:10px;background:#edf2f7;border-radius:6px;overflow:hidden}
+.chart-bar .fill{height:100%;border-radius:6px;transition:width .4s}
+.chart-bar .value{font-size:13px;font-weight:600;margin-top:4px}
+
+.table-wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+table{width:100%;border-collapse:collapse}
+th{background:#f7fafc;padding:12px 14px;text-align:left;font-size:12px;font-weight:600;color:#4a5568;text-transform:uppercase;border-bottom:1px solid #e2e8f0}
+td{padding:12px 14px;border-bottom:1px solid #edf2f7;font-size:13px;vertical-align:middle}
+tr:hover{background:#fafbfc}
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600}
+.b-low{background:#c6f6d5;color:#22543d}
+.b-med{background:#feebc8;color:#744210}
+.b-high{background:#fed7d7;color:#742a2a}
+.b-new{background:#bee3f8;color:#2a4365}
+.b-work{background:#c6f6d5;color:#22543d}
+.b-review{background:#fefcbf;color:#744210}
+.b-done{background:#e9d8fd;color:#44337a}
+.b-block{background:#fed7d7;color:#742a2a}
+.b-appr{background:#b2f5ea;color:#234e52}
+.progress{display:flex;align-items:center;gap:8px}
+.progress .bar{flex:1;height:6px;background:#edf2f7;border-radius:3px;overflow:hidden;min-width:60px}
+.progress .bar .fill{height:100%;background:linear-gradient(90deg,#48bb78,#38a169)}
+.progress .num{font-size:11px;color:#4a5568;font-weight:600;min-width:32px}
+.row-actions{display:flex;gap:4px}
+.empty{padding:40px;text-align:center;color:#a0aec0;font-size:14px}
+.pagination{display:flex;justify-content:center;gap:8px;padding:14px}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.3)}
+.modal-head{padding:18px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h3{font-size:17px}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#718096;line-height:1}
+.modal-body{padding:22px}
+.modal-foot{padding:14px 22px;border-top:1px solid #e2e8f0;display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:#fff}
+
+.form-row{margin-bottom:14px}
+.form-row label{display:block;font-size:12px;font-weight:600;color:#4a5568;margin-bottom:5px}
+.form-row input,.form-row textarea,.form-row select{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:inherit}
+.form-row textarea{resize:vertical;min-height:70px}
+.form-row input[readonly]{background:#f7fafc;color:#4a5568;cursor:not-allowed}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+.task-view .desc{background:#f7fafc;padding:14px;border-radius:8px;font-size:13px;line-height:1.6;white-space:pre-wrap;margin-bottom:16px;max-height:300px;overflow-y:auto}
+.task-view .meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.task-view .meta-item{background:#f7fafc;padding:10px 12px;border-radius:8px}
+.task-view .meta-item .k{font-size:11px;color:#718096;text-transform:uppercase;margin-bottom:3px}
+.task-view .meta-item .v{font-size:14px;font-weight:500}
+
+.comments{margin-top:18px;border-top:1px solid #e2e8f0;padding-top:16px}
+.comments h4{font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.comment{background:#f7fafc;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:13px;position:relative}
+.comment .c-head{display:flex;justify-content:space-between;font-size:11px;color:#718096;margin-bottom:4px}
+.comment .c-head b{color:#2d3748}
+.comment .c-del{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:#a0aec0;font-size:14px}
+.comment .c-del:hover{color:#e53e3e}
+.comment-form{display:flex;gap:8px;margin-top:10px}
+.comment-form input{flex:1;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:inherit}
+
+.hint-block{background:#f7fafc;padding:12px;border-radius:8px;font-size:12px;line-height:1.7;color:#4a5568;margin-bottom:14px}
+.hint-block b{color:#2d3748}
+
+@media(max-width:768px){
+.form-grid,.form-grid-3,.task-view .meta{grid-template-columns:1fr}
+th,td{padding:8px;font-size:12px}
+.header{padding:12px}
+}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN SCREEN ===== -->
-<div id="loginScreen" class="login-wrap">
+<!-- LOGIN -->
+<div class="login-wrap" id="loginScreen">
   <div class="login-card">
-    <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="logo" class="login-logo">
-    <div class="login-title">Черноморский молокозавод</div>
-    <div class="login-sub">Система управления задачами</div>
-    <div id="loginError" class="login-error">Неверный логин или пароль</div>
-    <form id="loginForm">
-      <div class="form-group">
-        <label>Логин организации</label>
-        <input type="text" id="loginUser" autocomplete="username" required>
-      </div>
-      <div class="form-group">
-        <label>Пароль</label>
-        <input type="password" id="loginPass" autocomplete="current-password" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Войти в систему</button>
-    </form>
+    <div class="logo"><img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="logo" onerror="this.style.display='none'"></div>
+    <h1>Черноморский молокозавод</h1>
+    <div class="sub">Система управления задачами</div>
+    <div class="err" id="loginErr">Неверный логин или пароль</div>
+    <label>Логин организации</label>
+    <input type="text" id="loginUser" placeholder="login" autocomplete="username">
+    <label>Пароль</label>
+    <input type="password" id="loginPass" placeholder="••••••" autocomplete="current-password">
+    <button class="btn-primary" onclick="doLogin()">Войти в систему</button>
     <div class="hint">
       <b>Подсказка:</b><br>
-      admin / superadmin — Админ (полный доступ)<br>
-      rarus / rarus2024 — Рарус (только свои карточки)<br>
-      gradient / grad2024 — Градиент (только свои)<br>
-      additional / add2024 — Дополнительный пользователь<br>
-      kutuzovtsy / kut2024 — Кутузовцы (только свои)<br>
-      czpt_mgmt / czpt2024mgmt — Руководство ЧЗПТ (все, только чтение)
+      <b>admin</b> / superadmin — Админ (полный доступ)<br>
+      <b>rarus</b> / rarus2024 — Рарус (только свои карточки)<br>
+      <b>gradient</b> / grad2024 — Градиент (только свои)<br>
+      <b>additional</b> / add2024 — Дополнительный пользователь<br>
+      <b>kutuzovtsy</b> / kut2024 — Кутузовцы (только свои)<br>
+      <b>czpt_mgmt</b> / czpt2024mgmt — Руководство ЧЗПТ (все, только чтение)
     </div>
   </div>
 </div>
 
-<!-- ===== APP SCREEN ===== -->
-<div id="appScreen" class="app">
-  <header class="header">
-    <div class="header-left">
-      <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="logo" class="header-logo">
+<!-- APP -->
+<div class="app" id="appScreen">
+  <div class="header">
+    <div class="brand">
+      <img src="https://crimeamilk.ru/images/logo/logo-new.svg" alt="logo" onerror="this.style.display='none'">
       <div>
-        <div class="header-title">Черноморский молокозавод</div>
-        <div class="header-sub">Система управления задачами</div>
+        <h2>Черноморский молокозавод</h2>
+        <div class="sub">Система управления задачами · <span id="userLabel"></span></div>
       </div>
     </div>
-    <div class="header-right">
-      <span id="userBadge" class="user-badge"></span>
-      <button class="btn btn-secondary" onclick="openInstruction()">Инструкция</button>
-      <button class="btn btn-secondary" onclick="openContacts()">Контакты</button>
-      <button class="btn btn-danger" onclick="logout()">Выйти</button>
+    <div class="actions">
+      <button class="btn" onclick="showInstruction()">Инструкция</button>
+      <button class="btn" onclick="showContacts()">Контакты</button>
+      <button class="btn btn-red" onclick="logout()">Выйти</button>
     </div>
-  </header>
+  </div>
+
+  <div class="readonly-banner" id="readonlyBanner">🔒 Режим «Только просмотр». Создание и редактирование задач недоступно.</div>
 
   <div class="container">
-    <div id="readonlyNotice" class="readonly-notice" style="display:none;">
-      🔒 Режим «Только просмотр». Создание и редактирование задач недоступно. Вы можете просматривать все задачи и подтягивать актуальные данные из облака.
-    </div>
-
-    <div class="toolbar">
-      <button id="btnNewTask" class="btn btn-success" onclick="openTaskModal()">+ Новая задача</button>
-      <button class="btn btn-info" onclick="openSyncModal()">Синхронизация (Push)</button>
-      <button class="btn btn-warning" onclick="openPullModal()">Загрузить из облака (Pull)</button>
-      <button class="btn btn-secondary" onclick="exportJSON()">Экспорт JSON</button>
-      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
+    <div class="actions" style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-blue" id="btnNewTask" onclick="openNewTask()">+ Новая задача</button>
+      <button class="btn btn-purple" onclick="openPush()">Синхронизация (Push)</button>
+      <button class="btn btn-green" onclick="openPull()">Загрузить из облака (Pull)</button>
+      <button class="btn btn-orange" onclick="exportJSON()">Экспорт JSON</button>
+      <button class="btn" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
     </div>
 
     <div class="filters">
-      <span class="filters-label">Организация:</span>
-      <div id="orgFilters" class="filters-chips"></div>
-    </div>
-    <div class="filters">
-      <span class="filters-label">Статус:</span>
-      <div id="statusFilters" class="filters-chips"></div>
+      <select id="filterOrg" onchange="render()"><option value="">Организация: все</option></select>
+      <select id="filterStatus" onchange="render()"><option value="">Статус: все</option></select>
+      <select id="filterPri" onchange="render()"><option value="">Приоритет: все</option></select>
+      <input type="text" id="filterSearch" placeholder="Поиск..." oninput="render()">
     </div>
 
-    <div class="chart-card">
-      <div class="chart-title">График выполнения задач</div>
-      <div id="chartBars" class="chart-bars"></div>
+    <div class="chart-section">
+      <h3>График выполнения задач</h3>
+      <div class="chart-bars" id="chartBars"></div>
     </div>
 
-    <div class="table-card">
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Статус</th>
-              <th>Приоритет</th>
-              <th>Название задачи</th>
-              <th>Организация</th>
-              <th>Ответственный</th>
-              <th>Часы / Стоимость</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody id="tasksBody"></tbody>
-        </table>
-      </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Статус</th>
+            <th>Приоритет</th>
+            <th>Название задачи</th>
+            <th>Организация</th>
+            <th>Ответственный</th>
+            <th>Прогресс</th>
+            <th>Часы / Стоимость</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="taskTable"></tbody>
+      </table>
       <div class="pagination">
-        <button class="btn btn-secondary" onclick="changePage(-1)">← Назад</button>
-        <span id="pageInfo" style="font-size:13px;color:#6b7280;"></span>
-        <button class="btn btn-secondary" onclick="changePage(1)">Вперёд →</button>
+        <button class="btn btn-sm" onclick="changePage(-1)">← Назад</button>
+        <span id="pageInfo" style="padding:6px 10px;font-size:13px"></span>
+        <button class="btn btn-sm" onclick="changePage(1)">Вперёд →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SYNC MODAL (Push) ===== -->
-<div id="syncModal" class="modal-overlay">
+<!-- TASK MODAL (create/edit) -->
+<div class="modal-bg" id="taskModal">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Облачная синхронизация (Push)</div>
-      <button class="modal-close" onclick="closeSyncModal()">×</button>
+    <div class="modal-head">
+      <h3 id="taskModalTitle">Новая задача</h3>
+      <button class="modal-close" onclick="closeModal('taskModal')">×</button>
     </div>
-    <div class="form-group">
-      <label>Ключ синхронизации (локальное хранилище)</label>
-      <input type="text" id="syncKey" value="cmilk_tasks_v1">
-    </div>
-    <div class="sync-grid">
-      <div class="form-group">
-        <label>Путь репозитория (owner/repo)</label>
-        <input type="text" id="syncRepo" value="Labenskij/sdlc" placeholder="owner/repo">
-      </div>
-      <div class="form-group">
-        <label>Целевой файл (фиксирован)</label>
-        <input type="text" id="syncFile" value="tasks.json" readonly style="background:#f3f4f6;">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Персональный ключ доступа (GitHub PAT)</label>
-      <input type="password" id="syncToken" placeholder="ghp_xxxxxxxxxxxx">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeSyncModal()">Отмена</button>
-      <button class="btn btn-info" onclick="pushToCloud()">⬆ Отправить в облако</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== PULL MODAL ===== -->
-<div id="pullModal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Загрузка из облака (Pull)</div>
-      <button class="modal-close" onclick="closePullModal()">×</button>
-    </div>
-    <div class="form-group">
-      <label>Ключ синхронизации (локальное хранилище)</label>
-      <input type="text" id="pullSyncKey" value="cmilk_tasks_v1">
-    </div>
-    <div class="sync-grid">
-      <div class="form-group">
-        <label>Путь репозитория (owner/repo)</label>
-        <input type="text" id="pullRepo" value="Labenskij/sdlc" placeholder="owner/repo">
-      </div>
-      <div class="form-group">
-        <label>Целевой файл (фиксирован)</label>
-        <input type="text" value="tasks.json" readonly style="background:#f3f4f6;">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Персональный ключ доступа (GitHub PAT)</label>
-      <input type="password" id="pullToken" placeholder="ghp_xxxxxxxxxxxx">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closePullModal()">Отмена</button>
-      <button class="btn btn-warning" onclick="pullFromCloud()">⬇ Загрузить из облака</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== TASK MODAL ===== -->
-<div id="taskModal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="taskModalTitle">Новая задача</div>
-      <button class="modal-close" onclick="closeTaskModal()">×</button>
-    </div>
-    <form id="taskForm" onsubmit="saveTask(event)">
+    <div class="modal-body">
       <input type="hidden" id="taskId">
-      <div class="form-group">
+      <div class="form-row">
         <label>Название задачи *</label>
-        <input type="text" id="taskTitle" required>
-      </div>
-      <div class="form-group">
-        <label>Описание</label>
-        <textarea id="taskDesc" rows="3"></textarea>
+        <input type="text" id="taskTitle">
       </div>
       <div class="form-row">
-        <div class="form-group">
+        <label>Описание</label>
+        <textarea id="taskDesc" rows="4"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
           <label>Организация</label>
           <select id="taskOrg">
             <option>РАРУС</option>
@@ -430,7 +246,7 @@
             <option>ЧЗПТ</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-row">
           <label>Отдел</label>
           <select id="taskDept">
             <option>ИТ</option>
@@ -441,775 +257,797 @@
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
+      <div class="form-grid-3">
+        <div class="form-row">
           <label>Приоритет</label>
-          <select id="taskPriority">
-            <option>Низкий</option>
-            <option selected>Средний</option>
-            <option>Высокий</option>
+          <select id="taskPri">
+            <option>Низкий</option><option>Средний</option><option>Высокий</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-row">
           <label>Ответственный *</label>
-          <input type="text" id="taskAssignee" required>
+          <input type="text" id="taskAssignee">
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
+        <div class="form-row">
           <label>Статус</label>
           <select id="taskStatus">
-            <option>К выполнению</option>
-            <option>В работе</option>
-            <option>На ревью</option>
-            <option>Утверждено</option>
-            <option>Заблокировано</option>
-            <option>Завершено</option>
+            <option>К выполнению</option><option>В работе</option><option>На ревью</option>
+            <option>Утверждено</option><option>Заблокировано</option><option>Завершено</option>
           </select>
         </div>
-        <div class="form-group">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
           <label>Прогресс (%)</label>
           <input type="number" id="taskProgress" min="0" max="100" value="0">
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
+        <div class="form-row">
           <label>Плановые часы</label>
           <input type="number" id="taskPlanned" min="0" step="0.5" value="0">
         </div>
-        <div class="form-group">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
           <label>Фактические часы</label>
           <input type="number" id="taskActual" min="0" step="0.5" value="0">
         </div>
+        <div class="form-row">
+          <label>Ставка часа (₽)</label>
+          <input type="number" id="taskRate" min="0" value="0">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Ставка часа (₽)</label>
-        <input type="number" id="taskRate" min="0" value="0">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Отмена</button>
-        <button type="submit" class="btn btn-primary" style="width:auto;">Сохранить задачу</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ===== CONFIRM MODAL ===== -->
-<div id="confirmModal" class="modal-overlay">
-  <div class="modal" style="max-width:400px;">
-    <div class="modal-header">
-      <div class="modal-title">Подтверждение действия</div>
-      <button class="modal-close" onclick="closeConfirm()">×</button>
     </div>
-    <p id="confirmText" style="margin-bottom:18px;color:#374151;">Вы уверены?</p>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeConfirm()">Отмена</button>
-      <button id="confirmOk" class="btn btn-danger">Подтвердить</button>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('taskModal')">Отмена</button>
+      <button class="btn btn-blue" onclick="saveTask()">Сохранить задачу</button>
     </div>
   </div>
 </div>
 
-<!-- ===== INSTRUCTION MODAL ===== -->
-<div id="instructionModal" class="modal-overlay">
-  <div class="modal" style="max-width:760px;">
-    <div class="modal-header">
-      <div class="modal-title">Инструкция и регламент</div>
-      <button class="modal-close" onclick="closeModal('instructionModal')">×</button>
+<!-- VIEW MODAL -->
+<div class="modal-bg" id="viewModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="viewTitle">Карточка задачи</h3>
+      <button class="modal-close" onclick="closeModal('viewModal')">×</button>
     </div>
-    <div style="font-size:14px;line-height:1.7;color:#374151;">
-      <h3 style="color:#1e3a8a;margin:10px 0 6px;">1. Общие положения</h3>
-      <p>Система управления задачами предприятия «Черноморский молокозавод» предназначена для организации, отслеживания и контроля выполнения задач.</p>
-      <h3 style="color:#1e3a8a;margin:14px 0 6px;">2. Роли и права доступа</h3>
-      <ul style="padding-left:20px;">
+    <div class="modal-body task-view" id="viewBody"></div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('viewModal')">Закрыть</button>
+      <button class="btn btn-blue" id="viewEditBtn" onclick="editFromView()">Редактировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head">
+      <h3>Подтверждение действия</h3>
+      <button class="modal-close" onclick="closeModal('confirmModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmText">Вы уверены?</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('confirmModal')">Отмена</button>
+      <button class="btn btn-red" id="confirmBtn">Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<!-- INSTRUCTION -->
+<div class="modal-bg" id="instrModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Инструкция и регламент</h3>
+      <button class="modal-close" onclick="closeModal('instrModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <h4 style="margin-bottom:8px">1. Общие положения</h4>
+      <p style="font-size:13px;line-height:1.6;margin-bottom:12px">Система управления задачами предприятия «Черноморский молокозавод» предназначена для организации, отслеживания и контроля выполнения задач.</p>
+      <h4 style="margin-bottom:8px">2. Роли и права доступа</h4>
+      <ul style="font-size:13px;line-height:1.7;padding-left:20px;margin-bottom:12px">
         <li><b>Админ</b> — полный доступ ко всем задачам</li>
         <li><b>Руководство ЧЗПТ</b> — просмотр всех задач и синхронизация из облака (без создания и редактирования)</li>
         <li><b>Пользователь организации</b> — видит только свои задачи; может создавать и редактировать свои</li>
       </ul>
-      <h3 style="color:#1e3a8a;margin:14px 0 6px;">3. Облачная синхронизация</h3>
-      <p>Доступна всем пользователям. Требует GitHub Personal Access Token с правами <code>repo</code>. Ключ синхронизации определяет локальное хранилище — разные ключи = разные наборы данных.</p>
-      <h3 style="color:#1e3a8a;margin:14px 0 6px;">4. Расчёт стоимости</h3>
-      <p>Плановая стоимость = Плановые часы × Ставка. Фактическая = Фактические часы × Ставка.</p>
+      <h4 style="margin-bottom:8px">3. Облачная синхронизация</h4>
+      <p style="font-size:13px;line-height:1.6;margin-bottom:12px">Доступна всем пользователям. Для работы требуется GitHub Personal Access Token с правами <code>repo</code>. Все пользователи работают с единым общим файлом <code>tasks.json</code> в централизованном репозитории.</p>
+      <h4 style="margin-bottom:8px">4. Расчёт стоимости</h4>
+      <p style="font-size:13px;line-height:1.6;margin-bottom:12px">Плановая = плановые часы × ставка. Фактическая = фактические часы × ставка.</p>
+      <h4 style="margin:12px 0 8px">5. Комментарии</h4>
+      <p style="font-size:13px;line-height:1.6">К каждой задаче можно добавлять комментарии для обмена информацией между участниками.</p>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" style="width:auto;" onclick="closeModal('instructionModal')">Закрыть</button>
+    <div class="modal-foot">
+      <button class="btn btn-blue" onclick="closeModal('instrModal')">Закрыть</button>
     </div>
   </div>
 </div>
 
-<!-- ===== CONTACTS MODAL ===== -->
-<div id="contactsModal" class="modal-overlay">
-  <div class="modal" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-title">Контактная информация</div>
+<!-- CONTACTS -->
+<div class="modal-bg" id="contactsModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Контактная информация</h3>
       <button class="modal-close" onclick="closeModal('contactsModal')">×</button>
     </div>
-    <div style="font-size:14px;line-height:1.8;">
-      <div style="margin-bottom:12px;"><b>Администратор</b><br>Полный доступ к системе</div>
-      <div style="margin-bottom:12px;"><b>РАРУС</b><br>ООО «РАРУС» — разработка и поддержка</div>
-      <div style="margin-bottom:12px;"><b>Градиент</b><br>ООО «Градиент» — партнёр</div>
-      <div style="margin-bottom:12px;"><b>Дополнительный пользователь</b><br>Дополнительный доступ</div>
-      <div style="margin-bottom:12px;"><b>Кутузовцы</b><br>ООО «Кутузовцы» — партнёр</div>
-      <div style="margin-bottom:12px;"><b>Руководство ЧЗПТ</b><br>Черноморский завод продовольственных товаров — руководство</div>
+    <div class="modal-body">
+      <div style="display:grid;gap:10px">
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>Администратор</b><br><span style="font-size:13px;color:#718096">Полный доступ к системе</span></div>
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>РАРУС</b><br><span style="font-size:13px;color:#718096">ООО «РАРУС» — разработка и поддержка</span></div>
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>Градиент</b><br><span style="font-size:13px;color:#718096">ООО «Градиент» — партнёр</span></div>
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>Дополнительный пользователь</b><br><span style="font-size:13px;color:#718096">Дополнительный доступ</span></div>
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>Кутузовцы</b><br><span style="font-size:13px;color:#718096">ООО «Кутузовцы» — партнёр</span></div>
+        <div style="padding:12px;background:#f7fafc;border-radius:8px"><b>Руководство ЧЗПТ</b><br><span style="font-size:13px;color:#718096">Черноморский завод продовольственных товаров — руководство</span></div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" style="width:auto;" onclick="closeModal('contactsModal')">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== DESCRIPTION VIEW MODAL ===== -->
-<div id="descModal" class="modal-overlay">
-  <div class="modal" style="max-width:720px;">
-    <div class="modal-header">
-      <div class="modal-title" id="descTitle">Описание</div>
-      <button class="modal-close" onclick="closeModal('descModal')">×</button>
-    </div>
-    <pre id="descContent" style="white-space:pre-wrap;font-family:inherit;font-size:13px;line-height:1.6;color:#374151;background:#f9fafb;padding:14px;border-radius:8px;max-height:60vh;overflow:auto;"></pre>
-    <div class="modal-footer">
-      <button class="btn btn-primary" style="width:auto;" onclick="closeModal('descModal')">Закрыть</button>
+    <div class="modal-foot">
+      <button class="btn btn-blue" onclick="closeModal('contactsModal')">Закрыть</button>
     </div>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<!-- PUSH -->
+<div class="modal-bg" id="pushModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Облачная синхронизация (Push)</h3>
+      <button class="modal-close" onclick="closeModal('pushModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row sync-static-field" id="pushKeyRow">
+        <label>Ключ синхронизации</label>
+        <input type="text" id="pushKey" readonly>
+      </div>
+      <div class="form-row sync-static-field" id="pushRepoRow">
+        <label>Путь репозитория (owner/repo)</label>
+        <input type="text" id="pushRepo" readonly>
+      </div>
+      <div class="form-row sync-static-field" id="pushFileRow">
+        <label>Целевой файл</label>
+        <input type="text" id="pushFile" readonly>
+      </div>
+      <div class="form-row">
+        <label>GitHub PAT (персональный токен доступа) *</label>
+        <input type="password" id="pushToken" placeholder="ghp_..." autocomplete="off">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('pushModal')">Отмена</button>
+      <button class="btn btn-purple" onclick="doPush()">⬆ Отправить в облако</button>
+    </div>
+  </div>
+</div>
+
+<!-- PULL -->
+<div class="modal-bg" id="pullModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Загрузка из облака (Pull)</h3>
+      <button class="modal-close" onclick="closeModal('pullModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row sync-static-field" id="pullKeyRow">
+        <label>Ключ синхронизации</label>
+        <input type="text" id="pullKey" readonly>
+      </div>
+      <div class="form-row sync-static-field" id="pullRepoRow">
+        <label>Путь репозитория (owner/repo)</label>
+        <input type="text" id="pullRepo" readonly>
+      </div>
+      <div class="form-row sync-static-field" id="pullFileRow">
+        <label>Целевой файл</label>
+        <input type="text" id="pullFile" readonly>
+      </div>
+      <div class="form-row">
+        <label>GitHub PAT (персональный токен доступа) *</label>
+        <input type="password" id="pullToken" placeholder="ghp_..." autocomplete="off">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('pullModal')">Отмена</button>
+      <button class="btn btn-green" onclick="doPull()">⬇ Загрузить из облака</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ============================================================
-   КОНФИГУРАЦИЯ
-   ============================================================ */
-const ORG_LIST = ['РАРУС','Градиент','Кутузовцы','Черноморский молокозавод','ЧЗПТ'];
-const SYNC_FILE = 'tasks.json';
-
+/* ==================== USERS ==================== */
+/** Пользователи системы с ролями и правами */
 const USERS = {
-  admin:      { password: 'superadmin',   role: 'admin',   displayName: 'Админ',                       org: 'Все' },
-  rarus:      { password: 'rarus2024',    role: 'user',    displayName: 'Рарус',                       org: 'РАРУС' },
-  gradient:   { password: 'grad2024',     role: 'user',    displayName: 'Градиент',                    org: 'Градиент' },
-  additional: { password: 'add2024',      role: 'user',    displayName: 'Дополнительный пользователь', org: 'Черноморский молокозавод' },
-  kutuzovtsy: { password: 'kut2024',      role: 'user',    displayName: 'Кутузовцы',                   org: 'Кутузовцы' },
-  czpt_mgmt:  { password: 'czpt2024mgmt', role: 'manager', displayName: 'Руководство ЧЗПТ',            org: 'ЧЗПТ' }
+  'admin':        { pass:'superadmin',   role:'admin',    org:'admin',  label:'Админ (полный доступ)' },
+  'rarus':        { pass:'rarus2024',    role:'user',     org:'РАРУС',  label:'РАРУС' },
+  'gradient':     { pass:'grad2024',     role:'user',     org:'Градиент',label:'Градиент' },
+  'additional':   { pass:'add2024',      role:'user',     org:'additional',label:'Дополнительный пользователь' },
+  'kutuzovtsy':   { pass:'kut2024',      role:'user',     org:'Кутузовцы',label:'Кутузовцы' },
+  'czpt_mgmt':    { pass:'czpt2024mgmt', role:'readonly', org:'ЧЗПТ',   label:'Руководство ЧЗПТ' },
+  'crimea':       { pass:'crimea2024',   role:'user',     org:'Черноморский молокозавод',label:'Черноморский молокозавод' }
 };
 
-const STATUSES = ['К выполнению','В работе','На ревью','Утверждено','Заблокировано','Завершено'];
-const STATUS_COLORS = {
-  'К выполнению':'#3b82f6','В работе':'#f59e0b','На ревью':'#6366f1',
-  'Утверждено':'#10b981','Заблокировано':'#ef4444','Завершено':'#6b7280'
-};
-const PAGE_SIZE = 15;
+/* ==================== SYNC CONFIG (централизованное хранилище) ==================== */
+/** Единый репозиторий для хранения задач всех пользователей */
+const SYNC_REPO = 'Labenskij/sdlc';
+/** Единый общий файл для всех пользователей (один источник правды) */
+const SYNC_FILE = 'tasks.json';
+/** Общий ключ синхронизации (единое хранилище для всех) */
+const SYNC_KEY  = 'common';
 
-/* ============================================================
-   СОСТОЯНИЕ
-   ============================================================ */
+/** Получение имени файла синхронизации (единый для всех пользователей) */
+function getSyncFileName(){
+  return SYNC_FILE;
+}
+/** Получение ключа синхронизации (единый для всех пользователей) */
+function getSyncKey(){
+  return SYNC_KEY;
+}
+
 let currentUser = null;
 let tasks = [];
-let orgFilter = 'Все';
-let statusFilter = 'Все';
-let currentPage = 1;
-let confirmCallback = null;
+let comments = {};
+let page = 1;
+const PAGE_SIZE = 10;
+let currentViewId = null;
 
-/* ============================================================
-   УТИЛИТЫ
-   ============================================================ */
-function toast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 2800);
+/* ==================== STORAGE ==================== */
+/** Сохранение задач в localStorage */
+function saveTasks(){
+  localStorage.setItem('cm_tasks', JSON.stringify(tasks));
+  localStorage.setItem('cm_comments', JSON.stringify(comments));
 }
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-/**
- * Нормализация значения: обрезка пробелов у строк, рекурсия для объектов/массивов.
- * Критично для корректной работы с данными из облака, где могут быть лишние пробелы в ключах.
- */
-function normalizeValue(v) {
-  if (typeof v === 'string') return v.trim();
-  if (Array.isArray(v)) return v.map(normalizeValue);
-  if (v && typeof v === 'object') return normalizeObject(v);
-  return v;
+/** Загрузка задач из localStorage */
+function loadTasks(){
+  try{
+    const d = localStorage.getItem('cm_tasks');
+    if(d) tasks = JSON.parse(d);
+  }catch(e){ tasks = []; }
+  try{
+    const c = localStorage.getItem('cm_comments');
+    if(c) comments = JSON.parse(c);
+  }catch(e){ comments = {}; }
+  if(!tasks.length) seedTasks();
 }
-function normalizeObject(obj) {
-  if (!obj || typeof obj !== 'object') return obj;
-  const result = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      result[key.trim()] = normalizeValue(obj[key]);
-    }
-  }
-  return result;
+/** Начальное заполнение задач из базы данных */
+function seedTasks(){
+  tasks = [
+    { id:"1781699382293", title:"Задача 2", description:"описание 2", org:"РАРУС", department:"ИТ", priority:"Средний", assignee:"Витя", status:"К выполнению", progress:11, plannedHours:5, actualHours:3, hourlyRate:5000, createdAt:"2026-06-17T12:29:42.293Z", owner:"admin" },
+    { id:"1781702150847", title:"Задача тест", description:"Претензия ВТБ по эквайрингу", org:"Черноморский молокозавод", department:"ЧЗПТ", priority:"Низкий", assignee:"Стас", status:"К выполнению", progress:65, plannedHours:5, actualHours:6, hourlyRate:2000, createdAt:"2026-06-17T13:15:50.847Z", owner:"crimea" }
+  ];
+  comments = {};
+  saveTasks();
 }
 
-/** Корректное декодирование base64 → UTF-8 строка */
-function decodeBase64(b64) {
-  const bin = atob(b64.replace(/\s/g, ''));
-  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-  return new TextDecoder('utf-8').decode(bytes);
-}
-/** Корректное кодирование UTF-8 строки → base64 */
-function encodeBase64(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-  return btoa(bin);
-}
-
-/** Миграция задач: если нет owner — считаем admin */
-function migrateTasks(arr) {
-  if (!Array.isArray(arr)) return [];
-  return arr.map(t => ({ ...t, owner: t.owner || 'admin' }));
-}
-
-/** Получение активного ключа синхронизации */
-function getActiveSyncKey() {
-  const syncModal = document.getElementById('syncModal');
-  const pullModal = document.getElementById('pullModal');
-  if (syncModal.classList.contains('active')) {
-    return (document.getElementById('syncKey').value || 'cmilk_tasks_v1').trim();
-  }
-  if (pullModal.classList.contains('active')) {
-    return (document.getElementById('pullSyncKey').value || 'cmilk_tasks_v1').trim();
-  }
-  return 'cmilk_tasks_v1';
-}
-
-function persistTasks() {
-  localStorage.setItem(getActiveSyncKey(), JSON.stringify({
-    tasks,
-    exportDate: new Date().toISOString(),
-    organization: currentUser ? currentUser.username : 'unknown'
-  }));
-}
-function loadTasks() {
-  const raw = localStorage.getItem(getActiveSyncKey());
-  if (raw) {
-    try {
-      const data = JSON.parse(raw);
-      if (Array.isArray(data.tasks)) { tasks = migrateTasks(data.tasks); return; }
-    } catch(e) {}
-  }
-  tasks = [];
-}
-
-/* ============================================================
-   АВТОРИЗАЦИЯ
-   ============================================================ */
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-  e.preventDefault();
+/* ==================== AUTH ==================== */
+/** Авторизация пользователя */
+function doLogin(){
   const u = document.getElementById('loginUser').value.trim().toLowerCase();
   const p = document.getElementById('loginPass').value;
   const user = USERS[u];
-  if (!user || user.password !== p) {
-    document.getElementById('loginError').style.display = 'block';
+  if(!user || user.pass !== p){
+    document.getElementById('loginErr').style.display = 'block';
     return;
   }
-  document.getElementById('loginError').style.display = 'none';
-  currentUser = { username: u, ...user };
-  enterApp();
-});
-
-function enterApp() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appScreen').classList.add('active');
-  const roleLabel = currentUser.role === 'admin' ? 'Админ'
-                  : currentUser.role === 'manager' ? 'Руководство'
-                  : 'Пользователь';
-  document.getElementById('userBadge').textContent = `${currentUser.displayName} (${roleLabel})`;
-
-  const isReadOnly = currentUser.role === 'manager';
-  document.getElementById('btnNewTask').style.display = isReadOnly ? 'none' : '';
-  document.getElementById('readonlyNotice').style.display = isReadOnly ? 'block' : 'none';
-
-  loadTasks();
-  renderOrgFilters();
-  renderStatusFilters();
-  renderChart();
-  renderTable();
+  currentUser = { login:u, ...user };
+  sessionStorage.setItem('cm_user', JSON.stringify(currentUser));
+  showApp();
 }
-
-function logout() {
+/** Выход из системы */
+function logout(){
+  sessionStorage.removeItem('cm_user');
   currentUser = null;
-  tasks = [];
-  orgFilter = 'Все';
-  statusFilter = 'Все';
-  currentPage = 1;
-  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('appScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginPass').value = '';
+}
+/** Проверка сессии */
+function checkSession(){
+  const s = sessionStorage.getItem('cm_user');
+  if(s){ currentUser = JSON.parse(s); showApp(); }
 }
 
-/* ============================================================
-   SDLS — ЛОГИКА ДОСТУПА
-   ============================================================ */
-/**
- * Просмотр задачи:
- * - admin/manager → все задачи
- * - user          → только свои (по owner)
- */
-function canViewTask(task) {
-  if (!currentUser) return false;
-  if (currentUser.role === 'admin' || currentUser.role === 'manager') return true;
-  return (task.owner || '') === currentUser.username;
+/* ==================== ACCESS CONTROL ==================== */
+/** Проверка возможности просмотра задачи */
+function canView(task){
+  if(!currentUser) return false;
+  if(currentUser.role === 'admin') return true;
+  if(currentUser.role === 'readonly') return true;
+  return task.org === currentUser.org || task.owner === currentUser.login;
 }
-/**
- * Редактирование/удаление:
- * - admin   → всё
- * - manager → ничего (read-only)
- * - user    → только свои (по owner)
- */
-function canEditTask(task) {
-  if (!currentUser) return false;
-  if (currentUser.role === 'admin') return true;
-  if (currentUser.role === 'manager') return false;
-  return (task.owner || '') === currentUser.username;
+/** Проверка возможности редактирования задачи */
+function canEdit(task){
+  if(!currentUser) return false;
+  if(currentUser.role === 'readonly') return false;
+  if(currentUser.role === 'admin') return true;
+  return task.org === currentUser.org || task.owner === currentUser.login;
 }
-function canCreateTask() {
-  return currentUser && currentUser.role === 'user';
+/** Проверка возможности удаления задачи */
+function canDelete(task){
+  return canEdit(task);
+}
+/** Режим только чтение */
+function isReadonly(){
+  return currentUser && currentUser.role === 'readonly';
+}
+/** Проверка, является ли текущий пользователь администратором */
+function isAdmin(){
+  return currentUser && currentUser.role === 'admin';
 }
 
-function getVisibleTasks() {
-  let list = tasks.filter(canViewTask);
-  if (orgFilter !== 'Все') list = list.filter(t => t.org === orgFilter);
-  if (statusFilter !== 'Все') list = list.filter(t => t.status === statusFilter);
-  const prio = { 'Высокий': 0, 'Средний': 1, 'Низкий': 2 };
-  list.sort((a, b) => {
-    const pa = prio[a.priority] ?? 1, pb = prio[b.priority] ?? 1;
-    if (pa !== pb) return pa - pb;
-    return (b.createdAt || '').localeCompare(a.createdAt || '');
+/* ==================== APP INIT ==================== */
+/** Показ основного приложения */
+function showApp(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('userLabel').textContent = currentUser.label;
+  document.getElementById('readonlyBanner').style.display = isReadonly() ? 'block' : 'none';
+  loadTasks();
+  populateFilters();
+  render();
+}
+
+/* ==================== FILTERS ==================== */
+/** Заполнение фильтров */
+function populateFilters(){
+  const orgs = [...new Set(tasks.map(t=>t.org).filter(Boolean))];
+  const stats = [...new Set(tasks.map(t=>t.status).filter(Boolean))];
+  const pris  = [...new Set(tasks.map(t=>t.priority).filter(Boolean))];
+  const fOrg = document.getElementById('filterOrg');
+  const fSt  = document.getElementById('filterStatus');
+  const fPr  = document.getElementById('filterPri');
+  fOrg.innerHTML = '<option value="">Организация: все</option>' + orgs.map(o=>`<option>${escapeHTML(o)}</option>`).join('');
+  fSt.innerHTML  = '<option value="">Статус: все</option>' + stats.map(s=>`<option>${escapeHTML(s)}</option>`).join('');
+  fPr.innerHTML  = '<option value="">Приоритет: все</option>' + pris.map(p=>`<option>${escapeHTML(p)}</option>`).join('');
+}
+
+/* ==================== RENDER ==================== */
+/** Отрисовка таблицы и графика */
+function render(){
+  const filtered = tasks.filter(t=>{
+    if(!canView(t)) return false;
+    const fo = document.getElementById('filterOrg').value;
+    const fs = document.getElementById('filterStatus').value;
+    const fp = document.getElementById('filterPri').value;
+    const fq = document.getElementById('filterSearch').value.toLowerCase();
+    if(fo && t.org !== fo) return false;
+    if(fs && t.status !== fs) return false;
+    if(fp && t.priority !== fp) return false;
+    if(fq){
+      const hay = (t.title+' '+t.description+' '+t.assignee+' '+t.org).toLowerCase();
+      if(!hay.includes(fq)) return false;
+    }
+    return true;
   });
-  return list;
-}
 
-/* ============================================================
-   РЕНДЕРИНГ
-   ============================================================ */
-function renderOrgFilters() {
-  const container = document.getElementById('orgFilters');
-  const all = ['Все', ...ORG_LIST];
-  container.innerHTML = all.map(s =>
-    `<div class="chip ${s === orgFilter ? 'active' : ''}" onclick="setOrgFilter('${s}')">${s}</div>`
-  ).join('');
-}
-function renderStatusFilters() {
-  const container = document.getElementById('statusFilters');
-  const all = ['Все', ...STATUSES];
-  container.innerHTML = all.map(s =>
-    `<div class="chip ${s === statusFilter ? 'active' : ''}" onclick="setStatusFilter('${s}')">${s}</div>`
-  ).join('');
-}
-function setOrgFilter(s) {
-  orgFilter = s; currentPage = 1;
-  renderOrgFilters(); renderTable();
-}
-function setStatusFilter(s) {
-  statusFilter = s; currentPage = 1;
-  renderStatusFilters(); renderTable();
-}
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if(page > totalPages) page = totalPages;
+  const start = (page-1)*PAGE_SIZE;
+  const slice = filtered.slice(start, start+PAGE_SIZE);
 
-function renderChart() {
-  const visible = tasks.filter(canViewTask);
-  const counts = {};
-  STATUSES.forEach(s => counts[s] = 0);
-  visible.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
-  const max = Math.max(1, ...Object.values(counts));
-  const html = STATUSES.map(s => {
-    const c = counts[s];
-    const pct = (c / max) * 100;
-    return `
-      <div class="chart-row">
-        <div class="chart-label">${s}</div>
-        <div class="chart-bar-bg">
-          <div class="chart-bar" style="width:${pct}%;background:${STATUS_COLORS[s]};">${c}</div>
-        </div>
-      </div>`;
-  }).join('');
-  document.getElementById('chartBars').innerHTML = html;
-}
-
-function renderTable() {
-  const list = getVisibleTasks();
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageItems = list.slice(start, start + PAGE_SIZE);
-
-  const tbody = document.getElementById('tasksBody');
-  if (pageItems.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет задач для отображения</td></tr>`;
+  const tbody = document.getElementById('taskTable');
+  if(!slice.length){
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">Нет задач для отображения</td></tr>';
   } else {
-    tbody.innerHTML = pageItems.map(t => {
-      const plannedCost = (t.plannedHours || 0) * (t.hourlyRate || 0);
-      const actualCost  = (t.actualHours  || 0) * (t.hourlyRate || 0);
-      const canEdit = canEditTask(t);
-      const actions = [];
-      if (canEdit) {
-        actions.push(`<button class="btn btn-info action-btn" onclick="editTask('${t.id}')">✎</button>`);
-        actions.push(`<button class="btn btn-danger action-btn" onclick="deleteTask('${t.id}')">🗑</button>`);
-      } else {
-        actions.push(`<button class="btn btn-secondary action-btn" onclick="viewDescription('${t.id}')">👁</button>`);
-      }
-      return `
-        <tr>
-          <td><span class="badge badge-status-${t.status}">${t.status}</span></td>
-          <td><span class="badge badge-priority-${t.priority}">${t.priority}</span></td>
-          <td>
-            <div style="font-weight:600;">${escapeHtml(t.title)}</div>
-            ${t.description ? `<div class="desc-preview" onclick="viewDescription('${t.id}')">${escapeHtml(t.description.substring(0,60))}${t.description.length>60?'…':''}</div>` : ''}
-            <div style="margin-top:4px;">
-              <div class="progress-bar"><div class="progress-fill" style="width:${t.progress||0}%;"></div></div>
-              <span style="font-size:11px;color:#6b7280;">${t.progress||0}%</span>
-            </div>
-          </td>
-          <td>${escapeHtml(t.org || '')}</td>
-          <td>${escapeHtml(t.assignee || '')}</td>
-          <td style="font-size:12px;">
-            <div>План: ${t.plannedHours||0} ч / ${plannedCost.toLocaleString('ru-RU')} ₽</div>
-            <div>Факт: ${t.actualHours||0} ч / ${actualCost.toLocaleString('ru-RU')} ₽</div>
-          </td>
-          <td>${actions.join('')}</td>
-        </tr>`;
+    tbody.innerHTML = slice.map(t=>{
+      const priBadge = t.priority==='Высокий'?'b-high':t.priority==='Средний'?'b-med':'b-low';
+      const stMap = {'К выполнению':'b-new','В работе':'b-work','На ревью':'b-review','Завершено':'b-done','Заблокировано':'b-block','Утверждено':'b-appr'};
+      const stBadge = stMap[t.status] || 'b-new';
+      const planned = (Number(t.plannedHours)||0) * (Number(t.hourlyRate)||0);
+      const actual  = (Number(t.actualHours)||0) * (Number(t.hourlyRate)||0);
+      const prog = Math.max(0, Math.min(100, Number(t.progress)||0));
+      const editDisabled = !canEdit(t);
+      const delDisabled  = !canDelete(t);
+      return `<tr>
+        <td><span class="badge ${stBadge}">${escapeHTML(t.status||'')}</span></td>
+        <td><span class="badge ${priBadge}">${escapeHTML(t.priority||'')}</span></td>
+        <td><a href="#" onclick="openView('${t.id}');return false" style="color:#2b6cb0;text-decoration:none;font-weight:500">${escapeHTML(t.title||'')}</a></td>
+        <td>${escapeHTML(t.org||'')}</td>
+        <td>${escapeHTML(t.assignee||'')}</td>
+        <td><div class="progress"><div class="bar"><div class="fill" style="width:${prog}%"></div></div><div class="num">${prog}%</div></div></td>
+        <td>${(t.plannedHours||0)}/${(t.actualHours||0)} ч<br><small style="color:#718096">${planned.toLocaleString('ru')}/${actual.toLocaleString('ru')} ₽</small></td>
+        <td><div class="row-actions">
+          <button class="btn btn-sm" onclick="openView('${t.id}')">👁</button>
+          <button class="btn btn-sm btn-blue" onclick="editTask('${t.id}')" ${editDisabled?'disabled style="opacity:.4;cursor:not-allowed"':''}>✎</button>
+          <button class="btn btn-sm btn-red" onclick="deleteTask('${t.id}')" ${delDisabled?'disabled style="opacity:.4;cursor:not-allowed"':''}>✕</button>
+        </div></td>
+      </tr>`;
     }).join('');
   }
-  document.getElementById('pageInfo').textContent = `Стр. ${currentPage} из ${totalPages} · Всего: ${list.length}`;
+  document.getElementById('pageInfo').textContent = `Стр. ${page} из ${totalPages} (${filtered.length} задач)`;
+  renderChart(filtered);
 }
 
-function escapeHtml(str) {
-  if (str == null) return '';
-  return String(str).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
+/** Отрисовка графика выполнения */
+function renderChart(list){
+  const stats = {
+    'К выполнению':{c:'#4299e1',n:0},
+    'В работе':{c:'#48bb78',n:0},
+    'На ревью':{c:'#ecc94b',n:0},
+    'Утверждено':{c:'#38b2ac',n:0},
+    'Заблокировано':{c:'#f56565',n:0},
+    'Завершено':{c:'#9f7aea',n:0}
+  };
+  list.forEach(t=>{ if(stats[t.status]) stats[t.status].n++; });
+  const max = Math.max(1, ...Object.values(stats).map(s=>s.n));
+  document.getElementById('chartBars').innerHTML = Object.entries(stats).map(([k,v])=>`
+    <div class="chart-bar">
+      <div class="label">${k}</div>
+      <div class="track"><div class="fill" style="width:${(v.n/max)*100}%;background:${v.c}"></div></div>
+      <div class="value" style="color:${v.c}">${v.n}</div>
+    </div>
+  `).join('');
 }
 
-function changePage(delta) {
-  const list = getVisibleTasks();
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-  const next = currentPage + delta;
-  if (next < 1 || next > totalPages) return;
-  currentPage = next;
-  renderTable();
+/* ==================== PAGINATION ==================== */
+/** Переключение страниц */
+function changePage(delta){
+  const total = Math.max(1, Math.ceil(tasks.filter(canView).length / PAGE_SIZE));
+  page = Math.max(1, Math.min(total, page+delta));
+  render();
 }
 
-/* ============================================================
-   МОДАЛЬНОЕ ОКНО ЗАДАЧИ
-   ============================================================ */
-function openTaskModal() {
-  if (!canCreateTask()) {
-    toast('Создание задач недоступно для вашей роли', 'error');
-    return;
-  }
+/* ==================== TASK CRUD ==================== */
+/** Открытие окна новой задачи (доступно любому авторизованному пользователю) */
+function openNewTask(){
+  if(!currentUser){ alert('Войдите в систему'); return; }
   document.getElementById('taskModalTitle').textContent = 'Новая задача';
-  document.getElementById('taskForm').reset();
   document.getElementById('taskId').value = '';
-  if (currentUser.org && currentUser.org !== 'Все') {
-    const sel = document.getElementById('taskOrg');
-    for (const opt of sel.options) if (opt.value === currentUser.org) opt.selected = true;
-  }
-  document.getElementById('taskAssignee').value = currentUser.displayName;
+  document.getElementById('taskTitle').value = '';
+  document.getElementById('taskDesc').value = '';
+  document.getElementById('taskOrg').value = currentUser.role==='admin' ? 'РАРУС' : (currentUser.org || 'РАРУС');
+  document.getElementById('taskDept').value = 'ИТ';
+  document.getElementById('taskPri').value = 'Средний';
+  document.getElementById('taskAssignee').value = '';
+  document.getElementById('taskStatus').value = 'К выполнению';
+  document.getElementById('taskProgress').value = 0;
+  document.getElementById('taskPlanned').value = 0;
+  document.getElementById('taskActual').value = 0;
+  document.getElementById('taskRate').value = 0;
   openModal('taskModal');
 }
-function closeTaskModal() { closeModal('taskModal'); }
-
-function editTask(id) {
-  const task = tasks.find(t => t.id === id);
-  if (!task) return;
-  if (!canEditTask(task)) {
-    toast('Нет прав на редактирование этой задачи', 'error');
-    return;
-  }
+/** Открытие окна редактирования задачи */
+function editTask(id){
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(!canEdit(t)){ alert('Нет прав на редактирование'); return; }
   document.getElementById('taskModalTitle').textContent = 'Редактирование задачи';
-  document.getElementById('taskId').value = task.id;
-  document.getElementById('taskTitle').value = task.title || '';
-  document.getElementById('taskDesc').value = task.description || '';
-  document.getElementById('taskOrg').value = task.org || 'РАРУС';
-  document.getElementById('taskDept').value = task.department || 'ИТ';
-  document.getElementById('taskPriority').value = task.priority || 'Средний';
-  document.getElementById('taskAssignee').value = task.assignee || '';
-  document.getElementById('taskStatus').value = task.status || 'К выполнению';
-  document.getElementById('taskProgress').value = task.progress || 0;
-  document.getElementById('taskPlanned').value = task.plannedHours || 0;
-  document.getElementById('taskActual').value = task.actualHours || 0;
-  document.getElementById('taskRate').value = task.hourlyRate || 0;
+  document.getElementById('taskId').value = t.id;
+  document.getElementById('taskTitle').value = t.title||'';
+  document.getElementById('taskDesc').value = t.description||'';
+  document.getElementById('taskOrg').value = t.org||'РАРУС';
+  document.getElementById('taskDept').value = t.department||'ИТ';
+  document.getElementById('taskPri').value = t.priority||'Средний';
+  document.getElementById('taskAssignee').value = t.assignee||'';
+  document.getElementById('taskStatus').value = t.status||'К выполнению';
+  document.getElementById('taskProgress').value = t.progress||0;
+  document.getElementById('taskPlanned').value = t.plannedHours||0;
+  document.getElementById('taskActual').value = t.actualHours||0;
+  document.getElementById('taskRate').value = t.hourlyRate||0;
   openModal('taskModal');
 }
-
-function saveTask(e) {
-  e.preventDefault();
+/** Сохранение задачи (создание или обновление) */
+function saveTask(){
   const id = document.getElementById('taskId').value;
+  const title = document.getElementById('taskTitle').value.trim();
+  const assignee = document.getElementById('taskAssignee').value.trim();
+  if(!title){ alert('Введите название задачи'); return; }
+  if(!assignee){ alert('Введите ответственного'); return; }
   const data = {
-    title: document.getElementById('taskTitle').value.trim(),
+    title, assignee,
     description: document.getElementById('taskDesc').value,
     org: document.getElementById('taskOrg').value,
     department: document.getElementById('taskDept').value,
-    priority: document.getElementById('taskPriority').value,
-    assignee: document.getElementById('taskAssignee').value.trim(),
+    priority: document.getElementById('taskPri').value,
     status: document.getElementById('taskStatus').value,
-    progress: parseInt(document.getElementById('taskProgress').value) || 0,
-    plannedHours: parseFloat(document.getElementById('taskPlanned').value) || 0,
-    actualHours: parseFloat(document.getElementById('taskActual').value) || 0,
-    hourlyRate: parseFloat(document.getElementById('taskRate').value) || 0
+    progress: Number(document.getElementById('taskProgress').value)||0,
+    plannedHours: Number(document.getElementById('taskPlanned').value)||0,
+    actualHours: Number(document.getElementById('taskActual').value)||0,
+    hourlyRate: Number(document.getElementById('taskRate').value)||0
   };
-
-  if (id) {
-    const idx = tasks.findIndex(t => t.id === id);
-    if (idx === -1) return;
-    if (!canEditTask(tasks[idx])) {
-      toast('Нет прав на редактирование', 'error');
-      return;
+  if(id){
+    const idx = tasks.findIndex(x=>x.id===id);
+    if(idx>=0){
+      if(!canEdit(tasks[idx])){ alert('Нет прав'); return; }
+      tasks[idx] = { ...tasks[idx], ...data };
     }
-    tasks[idx] = { ...tasks[idx], ...data };
-    toast('Задача обновлена', 'success');
   } else {
-    if (!canCreateTask()) {
-      toast('Создание задач недоступно', 'error');
-      return;
-    }
     tasks.push({
-      id: String(Date.now()),
+      id: Date.now().toString(),
       ...data,
       createdAt: new Date().toISOString(),
-      owner: currentUser.username
+      owner: currentUser.login
     });
-    toast('Задача создана', 'success');
   }
-  persistTasks();
-  closeTaskModal();
-  renderChart();
-  renderTable();
+  saveTasks();
+  populateFilters();
+  render();
+  closeModal('taskModal');
 }
-
-function deleteTask(id) {
-  const task = tasks.find(t => t.id === id);
-  if (!task) return;
-  if (!canEditTask(task)) {
-    toast('Нет прав на удаление', 'error');
-    return;
-  }
-  showConfirm(`Удалить задачу «${task.title}»?`, () => {
-    tasks = tasks.filter(t => t.id !== id);
-    persistTasks();
-    renderChart();
-    renderTable();
-    toast('Задача удалена', 'success');
+/** Удаление задачи с подтверждением */
+function deleteTask(id){
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(!canDelete(t)){ alert('Нет прав на удаление'); return; }
+  showConfirm(`Удалить задачу «${t.title}»?`, ()=>{
+    tasks = tasks.filter(x=>x.id!==id);
+    delete comments[id];
+    saveTasks();
+    populateFilters();
+    render();
   });
 }
 
-function viewDescription(id) {
-  const task = tasks.find(t => t.id === id);
-  if (!task) return;
-  document.getElementById('descTitle').textContent = task.title;
-  document.getElementById('descContent').textContent = task.description || '(описание отсутствует)';
-  openModal('descModal');
+/* ==================== VIEW TASK ==================== */
+/** Открытие карточки задачи на просмотр */
+function openView(id){
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(!canView(t)){ alert('Нет доступа к этой задаче'); return; }
+  currentViewId = id;
+  document.getElementById('viewTitle').textContent = t.title || 'Карточка задачи';
+  const planned = (Number(t.plannedHours)||0) * (Number(t.hourlyRate)||0);
+  const actual  = (Number(t.actualHours)||0) * (Number(t.hourlyRate)||0);
+  const prog = Math.max(0, Math.min(100, Number(t.progress)||0));
+  const cmts = comments[id] || [];
+  const canEditThis = canEdit(t);
+
+  document.getElementById('viewEditBtn').style.display = canEditThis ? 'inline-flex' : 'none';
+
+  document.getElementById('viewBody').innerHTML = `
+    <div class="meta">
+      <div class="meta-item"><div class="k">Организация</div><div class="v">${escapeHTML(t.org||'—')}</div></div>
+      <div class="meta-item"><div class="k">Отдел</div><div class="v">${escapeHTML(t.department||'—')}</div></div>
+      <div class="meta-item"><div class="k">Ответственный</div><div class="v">${escapeHTML(t.assignee||'—')}</div></div>
+      <div class="meta-item"><div class="k">Статус</div><div class="v">${escapeHTML(t.status||'—')}</div></div>
+      <div class="meta-item"><div class="k">Приоритет</div><div class="v">${escapeHTML(t.priority||'—')}</div></div>
+      <div class="meta-item"><div class="k">Прогресс</div><div class="v">${prog}%</div></div>
+      <div class="meta-item"><div class="k">Плановые часы</div><div class="v">${t.plannedHours||0} ч · ${planned.toLocaleString('ru')} ₽</div></div>
+      <div class="meta-item"><div class="k">Фактические часы</div><div class="v">${t.actualHours||0} ч · ${actual.toLocaleString('ru')} ₽</div></div>
+      <div class="meta-item" style="grid-column:1/-1"><div class="k">Создана</div><div class="v">${new Date(t.createdAt).toLocaleString('ru')}</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:#4a5568;margin-bottom:6px">Описание</div>
+    <div class="desc">${escapeHTML(t.description||'Нет описания')}</div>
+    <div class="comments">
+      <h4>💬 Комментарии (${cmts.length})</h4>
+      <div id="commentsList">${cmts.length ? cmts.map((c,i)=>`
+        <div class="comment">
+          <div class="c-head"><span><b>${escapeHTML(c.author)}</b> · ${new Date(c.date).toLocaleString('ru')}</span></div>
+          <div style="padding-right:20px;white-space:pre-wrap">${escapeHTML(c.text)}</div>
+          ${canDeleteComment(t, c) ? `<button class="c-del" onclick="deleteComment('${id}',${i})" title="Удалить">×</button>` : ''}
+        </div>`).join('') : '<div style="color:#a0aec0;font-size:13px">Пока нет комментариев</div>'}
+      </div>
+      <div class="comment-form">
+        <input type="text" id="commentInput" placeholder="Написать комментарий..." onkeydown="if(event.key==='Enter')addComment('${id}')">
+        <button class="btn btn-blue btn-sm" onclick="addComment('${id}')">Отправить</button>
+      </div>
+    </div>
+  `;
+  openModal('viewModal');
+}
+/** Редактирование из окна просмотра */
+function editFromView(){
+  if(!currentViewId) return;
+  closeModal('viewModal');
+  setTimeout(()=>editTask(currentViewId), 200);
+}
+/** Добавление комментария к задаче */
+function addComment(taskId){
+  const inp = document.getElementById('commentInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  if(!comments[taskId]) comments[taskId] = [];
+  comments[taskId].push({
+    author: currentUser.label,
+    login: currentUser.login,
+    text,
+    date: new Date().toISOString()
+  });
+  saveTasks();
+  openView(taskId);
+}
+/** Удаление комментария */
+function deleteComment(taskId, idx){
+  if(!comments[taskId]) return;
+  const c = comments[taskId][idx];
+  if(!c) return;
+  const t = tasks.find(x=>x.id===taskId);
+  const allowed = currentUser.role==='admin' || c.login===currentUser.login || (t && canEdit(t));
+  if(!allowed){ alert('Нет прав'); return; }
+  comments[taskId].splice(idx,1);
+  saveTasks();
+  openView(taskId);
+}
+/** Проверка прав на удаление комментария */
+function canDeleteComment(task, comment){
+  if(!currentUser) return false;
+  if(currentUser.role==='admin') return true;
+  if(comment.login === currentUser.login) return true;
+  return canEdit(task);
 }
 
-/* ============================================================
-   ПОДТВЕРЖДЕНИЕ
-   ============================================================ */
-function showConfirm(text, cb) {
-  document.getElementById('confirmText').textContent = text;
-  confirmCallback = cb;
-  document.getElementById('confirmOk').onclick = () => {
-    closeConfirm();
-    if (confirmCallback) confirmCallback();
+/* ==================== SYNC ==================== */
+/** Подготовка статических readonly-полей и видимости для модалок синхронизации.
+ *  Для админа — показываем три поля в режиме readonly.
+ *  Для остальных — скрываем три поля. Поле GitHub PAT остаётся видимым для всех. */
+function prepareSyncModal(prefix){
+  const keyInput  = document.getElementById(prefix + 'Key');
+  const repoInput = document.getElementById(prefix + 'Repo');
+  const fileInput = document.getElementById(prefix + 'File');
+  const keyRow    = document.getElementById(prefix + 'KeyRow');
+  const repoRow   = document.getElementById(prefix + 'RepoRow');
+  const fileRow   = document.getElementById(prefix + 'FileRow');
+  const tokenInput= document.getElementById(prefix + 'Token');
+
+  // Заполняем статические значения (единые для всех пользователей)
+  keyInput.value  = getSyncKey();
+  repoInput.value = SYNC_REPO;
+  fileInput.value = getSyncFileName();
+
+  // Поля всегда readonly (статические, ввод запрещён для всех)
+  keyInput.readOnly  = true;
+  repoInput.readOnly = true;
+  fileInput.readOnly = true;
+
+  // Видимость: админ видит readonly-поля, остальные — нет
+  const visible = isAdmin();
+  keyRow.style.display  = visible ? '' : 'none';
+  repoRow.style.display = visible ? '' : 'none';
+  fileRow.style.display = visible ? '' : 'none';
+
+  // Поле токена всегда видимо и доступно для ввода
+  tokenInput.value = '';
+}
+
+/** Открытие окна Push с подготовкой полей согласно роли пользователя */
+function openPush(){
+  prepareSyncModal('push');
+  openModal('pushModal');
+}
+/** Открытие окна Pull с подготовкой полей согласно роли пользователя */
+function openPull(){
+  prepareSyncModal('pull');
+  openModal('pullModal');
+}
+/** Получение актуальных параметров синхронизации (единый файл/репозиторий для всех) */
+function getSyncParams(prefix){
+  return {
+    key:   getSyncKey(),
+    repo:  SYNC_REPO,
+    file:  getSyncFileName(),
+    token: document.getElementById(prefix + 'Token').value.trim()
   };
-  openModal('confirmModal');
 }
-function closeConfirm() { closeModal('confirmModal'); confirmCallback = null; }
-
-/* ============================================================
-   СИНХРОНИЗАЦИЯ С ОБЛАКОМ (GitHub) — РАБОЧАЯ ЛОГИКА
-   ============================================================ */
-function openSyncModal() { openModal('syncModal'); }
-function closeSyncModal() { closeModal('syncModal'); }
-function openPullModal() { openModal('pullModal'); }
-function closePullModal() { closeModal('pullModal'); }
-
-function validateRepo(repo) {
-  return /^[^/]+\/[^/]+$/.test(repo);
-}
-
-/** Push — отправка задач в GitHub */
-async function pushToCloud() {
-  const repo = document.getElementById('syncRepo').value.trim();
-  const token = document.getElementById('syncToken').value.trim();
-  const file = document.getElementById('syncFile').value.trim();
-  if (!repo || !token || !file) {
-    toast('Заполните все параметры синхронизации', 'error');
-    return;
-  }
-  if (!validateRepo(repo)) {
-    toast('Неверный формат: owner/repo', 'error');
-    return;
-  }
-  const url = `https://api.github.com/repos/${repo}/contents/${file}`;
-  try {
-    toast('Отправка данных в облако…');
+/** Отправка данных в GitHub (Push) в единый общий файл tasks.json */
+async function doPush(){
+  const { repo, file, token } = getSyncParams('push');
+  if(!token){ alert('Введите GitHub PAT'); return; }
+  try{
     const payload = {
       tasks,
+      comments,
       exportDate: new Date().toISOString(),
-      organization: currentUser.username
+      organization: currentUser.login
     };
-    const content = encodeBase64(JSON.stringify(payload, null, 2));
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
 
-    // Получаем SHA существующего файла
-    let sha = null;
-    try {
-      const getResp = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28'
-        }
+    // Получаем sha существующего файла (если он есть в общем хранилище)
+    let sha = '';
+    try{
+      const r = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+        headers:{ Authorization:'token '+token, 'Accept':'application/vnd.github.v3+json' }
       });
-      if (getResp.ok) {
-        sha = (await getResp.json()).sha;
-      } else if (getResp.status !== 404) {
-        const err = await getResp.json().catch(() => ({}));
-        throw new Error(err.message || `HTTP ${getResp.status}`);
+      if(r.ok){
+        const d = await r.json();
+        sha = d.sha || '';
       }
-    } catch (e) {
-      if (e.message && !e.message.includes('Failed to fetch')) throw e;
-    }
+    }catch(e){ /* файла ещё нет — это нормально */ }
 
-    const body = {
-      message: `Update tasks (${currentUser.username}, ${new Date().toISOString()})`,
-      content
-    };
-    if (sha) body.sha = sha;
-
-    const putResp = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28'
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+      method:'PUT',
+      headers:{
+        Authorization:'token '+token,
+        'Content-Type':'application/json',
+        'Accept':'application/vnd.github.v3+json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        message:'sync push by ' + currentUser.login + ' at ' + new Date().toISOString(),
+        content,
+        sha
+      })
     });
-
-    if (putResp.ok || putResp.status === 201) {
-      persistTasks();
-      toast('Данные успешно отправлены в облако', 'success');
-      closeSyncModal();
+    if(res.ok){
+      alert('Успешно отправлено в облако (единый файл: ' + file + ')');
+      closeModal('pushModal');
     } else {
-      const err = await putResp.json().catch(() => ({}));
-      throw new Error(err.message || `HTTP ${putResp.status}`);
+      const e = await res.json().catch(()=>({}));
+      alert('Ошибка: ' + (e.message || res.status) + '\nПроверьте токен и доступ к репозиторию ' + repo);
     }
-  } catch (err) {
-    toast('Ошибка Push: ' + err.message, 'error');
-  }
+  }catch(err){ alert('Ошибка сети: '+err.message); }
 }
-
-/** Pull — загрузка задач из GitHub. Доступна всем ролям */
-async function pullFromCloud() {
-  const repo = document.getElementById('pullRepo').value.trim();
-  const token = document.getElementById('pullToken').value.trim();
-  const file = SYNC_FILE;
-  if (!repo || !token) {
-    toast('Заполните параметры синхронизации', 'error');
-    return;
-  }
-  if (!validateRepo(repo)) {
-    toast('Неверный формат: owner/repo', 'error');
-    return;
-  }
-  const url = `https://api.github.com/repos/${repo}/contents/${file}`;
-  try {
-    toast('Загрузка данных из облака…');
-    const resp = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28'
+/** Загрузка данных из GitHub (Pull) из единого общего файла tasks.json */
+async function doPull(){
+  const { repo, file, token } = getSyncParams('pull');
+  if(!token){ alert('Введите GitHub PAT'); return; }
+  try{
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+      headers:{
+        Authorization:'token '+token,
+        'Accept':'application/vnd.github.v3+json'
       }
     });
-    if (!resp.ok) {
-      if (resp.status === 404) throw new Error('Файл не найден. Сначала выполните Push.');
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.message || `HTTP ${resp.status}`);
+    if(!res.ok){
+      alert('Файл не найден в облаке (' + file + ')\nВозможно, ещё никто не выполнил Push.');
+      return;
     }
-    const data = await resp.json();
-    if (!data.content) throw new Error('Пустой ответ от сервера');
-
-    const decoded = decodeBase64(data.content);
-    const parsed = JSON.parse(decoded);
-    const normalized = normalizeObject(parsed);
-
-    if (!Array.isArray(normalized.tasks)) throw new Error('Неверный формат файла');
-
-    tasks = migrateTasks(normalized.tasks);
-    persistTasks();
-    renderChart();
-    renderTable();
-    toast(`Загружено задач: ${tasks.length}`, 'success');
-    closePullModal();
-  } catch (err) {
-    toast('Ошибка Pull: ' + err.message, 'error');
-  }
+    const d = await res.json();
+    const json = JSON.parse(decodeURIComponent(escape(atob(d.content))));
+    if(json.tasks) tasks = json.tasks;
+    if(json.comments) comments = json.comments;
+    saveTasks();
+    populateFilters();
+    render();
+    alert('Данные загружены из облака (единый файл: ' + file + ')');
+    closeModal('pullModal');
+  }catch(err){ alert('Ошибка: '+err.message); }
 }
 
-/* ============================================================
-   ЭКСПОРТ / ИМПОРТ JSON
-   ============================================================ */
-function exportJSON() {
-  const visible = tasks.filter(canViewTask);
-  const payload = {
-    tasks: visible,
-    exportDate: new Date().toISOString(),
-    organization: currentUser.username
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+/* ==================== IMPORT/EXPORT ==================== */
+/** Экспорт задач в JSON-файл */
+function exportJSON(){
+  const data = { tasks, comments, exportDate:new Date().toISOString(), organization:currentUser.login };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const a = document.createElement('a');
-  a.href = url;
-  a.download = SYNC_FILE;
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tasks_'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
-  URL.revokeObjectURL(url);
-  toast('Файл экспортирован', 'success');
 }
-
-function importJSON(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const raw = JSON.parse(ev.target.result);
-      const normalized = normalizeObject(raw);
-      if (!Array.isArray(normalized.tasks)) throw new Error('Нет массива tasks');
-      showConfirm(`Импортировать ${normalized.tasks.length} задач? Текущие будут заменены.`, () => {
-        tasks = migrateTasks(normalized.tasks);
-        persistTasks();
-        renderChart();
-        renderTable();
-        toast('Импорт выполнен', 'success');
-      });
-    } catch (err) {
-      toast('Ошибка импорта: ' + err.message, 'error');
-    }
+/** Импорт задач из JSON-файла */
+function importJSON(ev){
+  const f = ev.target.files[0];
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = e=>{
+    try{
+      const d = JSON.parse(e.target.result);
+      if(d.tasks) tasks = d.tasks;
+      if(d.comments) comments = d.comments;
+      saveTasks();
+      populateFilters();
+      render();
+      alert('Импорт выполнен');
+    }catch(err){ alert('Ошибка парсинга JSON'); }
   };
-  reader.onerror = () => toast('Ошибка чтения файла', 'error');
-  reader.readAsText(file);
-  e.target.value = '';
+  rd.readAsText(f);
+  ev.target.value = '';
 }
 
-/* ============================================================
-   ДОПОЛНИТЕЛЬНЫЕ ОКНА
-   ============================================================ */
-function openInstruction() { openModal('instructionModal'); }
-function openContacts() { openModal('contactsModal'); }
+/* ==================== MODALS ==================== */
+/** Открытие модального окна */
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+/** Закрытие модального окна */
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+/** Показ окна подтверждения */
+function showConfirm(text, onYes){
+  document.getElementById('confirmText').textContent = text;
+  const btn = document.getElementById('confirmBtn');
+  btn.onclick = ()=>{ onYes(); closeModal('confirmModal'); };
+  openModal('confirmModal');
+}
+/** Показ инструкции */
+function showInstruction(){ openModal('instrModal'); }
+/** Показ контактов */
+function showContacts(){ openModal('contactsModal'); }
 
-/* ============================================================
-   ИНИЦИАЛИЗАЦИЯ
-   ============================================================ */
-document.querySelectorAll('.modal-overlay').forEach(ov => {
-  ov.addEventListener('click', (e) => {
-    if (e.target === ov) ov.classList.remove('active');
-  });
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-  }
+/* ==================== UTILS ==================== */
+/** Экранирование HTML для предотвращения XSS */
+function escapeHTML(s){
+  if(s===undefined||s===null) return '';
+  return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  checkSession();
 });
 </script>
 </body>
